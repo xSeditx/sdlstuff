@@ -1,0 +1,536 @@
+
+
+// using namespace std;
+// using namespace glm;
+// 
+// 
+// struct Vertex
+// {
+//     Vec3 Position;
+//     Vec3 Normals;
+//     Vec2 Uv;
+// };
+// 
+// 
+// ///     OpenGL BUFFER ABSTRACTIONS
+//
+/*
+================================================================================================================================================================
+//
+//
+//      BUFFERs MODULE
+//
+//
+=================================================================================================================================================================
+*/
+// 
+// class VAO
+//  {
+//  public:
+//  	VAO();
+//  	~VAO();
+//  
+//  	GLuint ID;
+//  	
+//  	void EnableAttribute(GLuint index);
+//  	void DisableAttribute(GLuint index);
+//  	void Bind();
+//  	void Unbind();
+//  	int MaxAttributes();
+//  private:
+//  	GLint MaxAttrib;
+//  };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class VertexBuffer
+// {
+// public:
+//     VertexBuffer() {}
+//    ~VertexBuffer();
+//     VertexBuffer(Vec3 *Vertexdata, GLsizei count);
+// 	VertexBuffer(Vec4 *vertexdata, GLsizei vcount);
+// 
+// 	GLuint ID;
+//     GLint  ElementCount;
+// 
+//     void Bind();
+//     void Unbind();
+// 
+//     void Lock(GLenum access);
+//     void Unlock();
+// 	Vec4  *Data;
+//     GLfloat *Read();
+//     void Write(GLuint pos, GLfloat *data);
+//     void Rebuild();
+// private:
+// 
+// };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class ColorBuffer
+//  {
+//  public:
+//      ColorBuffer() {}
+//      ~ColorBuffer();
+//  	ColorBuffer(Vec3 *ColorData, GLsizei count)
+//  {
+//  	Vec4 *tempdata = new Vec4[count];
+//  
+//  	for_loop(Index, count)
+//  	{
+//  		tempdata[Index] = Vec4(ColorData[Index].r, ColorData[Index].g, ColorData[Index].b, 1.0f);
+//  	}
+//  	*this = ColorBuffer(tempdata, count);
+//  	delete[]tempdata;
+//  }
+//      ColorBuffer(Vec4 *ColorData, GLsizei count);
+//  
+//      GLuint ID;
+//      GLint  ElementCount;
+//  
+//  public:
+//      void Bind();
+//      void Unbind();
+//  	Vec4 *Data;
+//  private:
+//  	
+//  };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class NormalBuffer
+//  {
+//  public:
+//      NormalBuffer() {}
+//      ~NormalBuffer();
+//  
+//  	NormalBuffer(Vec4 *NormalData, GLsizei count);
+//  	NormalBuffer(Vec3 *NormalData, GLsizei count);
+//  
+//      GLuint ID;
+//      GLint  ElementCount;
+//  
+//  public:
+//      void Bind();
+//      void Unbind();
+//  	Vec4 *Data;
+//  
+//  private:
+//  };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class IndexBuffer
+// {
+// public:
+//     IndexBuffer() {}
+//     ~IndexBuffer();
+//     IndexBuffer(GLuint *data, GLsizei count);
+// 
+//     GLuint ID;
+//     GLuint ElementCount;
+// 
+// public:
+//     void Bind();
+//     void Unbind();
+// private:
+// 	GLuint *Data;
+// };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class Image
+//  {
+//  public:
+//      Image();
+// VAO::VAO() 
+// {
+//     glGenVertexArrays(1, &ID);
+// }
+// VAO::~VAO()
+// {
+//     //glDeleteVertexArrays(ID);
+//	Print("Delete VAO");
+// }
+// void VAO::Bind()
+// {
+//     glBindVertexArray(ID);
+// }
+// void VAO::Unbind()
+//{
+//    glBindVertexArray(0);
+//}
+//// void VAO::EnableAttribute(GLuint ind)
+// {
+//     glEnableVertexAttribArray(ind);
+// }
+// void VAO::DisableAttribute(GLuint ind)
+// {
+// #ifdef _DEBUG
+//     glDisableVertexAttribArray(ind);
+// #endif
+// }
+// int  VAO::MaxAttributes()
+// {
+//     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &MaxAttrib);
+//     return MaxAttrib;
+// }
+// // 
+// // //https://www.slideshare.net/Mark_Kilgard/using-vertex-bufferobjectswell
+// //==================================================================================================================================================
+// //__________________________________ VERTEX BUFFER CLASS ___________________________________________________________________________________________
+// // 
+// // ertexBuffer::~VertexBuffer()
+// {
+// //    glDeleteBuffers(1, &ID);
+// }
+// // 
+// // ertexBuffer::VertexBuffer(Vec4 *vertexdata, GLsizei vcount)
+// // 	: ElementCount(vcount),
+// // 	ID(0)
+// // 
+// // 	Data = new Vec4[vcount];
+// // 	memcpy(Data, vertexdata, sizeof(Vec4) * vcount);
+// // 	_GL(glGenBuffers(1, &ID));
+// // 	glBindBuffer(GL_ARRAY_BUFFER, ID);
+// // 	glBufferData(GL_ARRAY_BUFFER, ElementCount * sizeof(Vec4), vertexdata, GL_DYNAMIC_DRAW);
+// // 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+// // 
+// // ertexBuffer::VertexBuffer(Vec3 *vertexdata, GLsizei vcount)
+// // 	: ElementCount(vcount),
+// // 	ID(0)
+// // 
+// // 	Vec4 *tempdata = new Vec4[vcount];
+// // 
+// // 	for_loop(Index, vcount)
+// 	{
+// 		tempdata[Index] = Vec4(vertexdata[Index].r, vertexdata[Index].g, vertexdata[Index].b, 1.0f);
+// 	}
+// // 	*this = VertexBuffer(tempdata, vcount);
+// // 	delete[]tempdata;
+// // 
+// // oid VertexBuffer::Bind()
+// // 
+// // if _OPENGL_FIXED_FUNCTION
+// //    glBindBuffer(GL_ARRAY_BUFFER, ID);
+// //    _GL(glVertexPointer(4, GL_FLOAT, 0, (char *)NULL));
+// //    glEnableClientState(GL_VERTEX_ARRAY);
+// // else
+// //    glBindBuffer(GL_ARRAY_BUFFER, ID);
+// //    glVertexAttribPointer(Shader::VertexLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+// // endif
+// // 
+// // 
+// // oid VertexBuffer::Unbind()
+// {
+// #if _DEBUG
+// #if _OPENGL_FIXED_FUNCTION
+//           glDisableClientState(GL_VERTEX_ARRAY);
+//     glBindBuffer(GL_ARRAY_BUFFER,0);
+// #else
+// #endif
+// #endif
+// }
+// // oid VertexBuffer::Lock(GLenum access)
+// {
+//         Data = (Vec4 *)glMapBuffer(ID, access);
+// }
+// // oid VertexBuffer::Unlock()
+// {
+//     glUnmapBuffer(ID);
+// }
+// // oid VertexBuffer::Rebuild()
+// {    
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//         glBufferSubData(GL_ARRAY_BUFFER, 0,ElementCount * sizeof(Vec4), Data) ; 
+//     glBindBuffer(GL_ARRAY_BUFFER,0);
+// }
+// // //  void VertexBuffer::Write(GLuint pos, GLfloat *data)
+// //  {
+// //  	glBindBuffer(GL_ARRAY_BUFFER, ID);
+// //  	glBufferSubData(GL_ARRAY_BUFFER, 0, ElementCount * sizeof(Vec3), Data);
+// //  	glBindBuffer(GL_ARRAY_BUFFER, 0);
+// //  }
+// // 
+// // //==================================================================================================================================================
+// //__________________________________ INDEX BUFFER CLASS ____________________________________________________________________________________________
+// // 
+// // ndexBuffer::~IndexBuffer()
+// {
+// //    glDeleteBuffers(1, &ID);
+// }
+// // ndexBuffer::IndexBuffer(GLuint *data, GLsizei count)
+//            : ElementCount(count),
+//              ID(0)
+// {
+//         Data = new GLuint[count];
+//         memcpy(Data, data, sizeof(GLuint) * count);
+// 
+//         glGenBuffers(1,&ID);
+//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ID);
+//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW);
+//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+// }
+// // oid IndexBuffer::Bind()
+// {
+// #if _OPENGL_FIXED_FUNCTION
+//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+//         glIndexPointer(GL_FLOAT, 0, (void *) NULL);
+//         glEnableClientState(GL_INDEX_ARRAY);
+// #else
+//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+// #endif
+// }
+// // oid IndexBuffer::Unbind()
+// {
+// #if _DEBUG
+// #if _OPENGL_FIXED_FUNCTION
+//     glDisableClientState(GL_COLOR_ARRAY);
+//     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+// #else
+// 
+// #endif
+//     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+// #else
+// #endif
+// }
+// // 
+// // //==================================================================================================================================================
+// //__________________________________ COLOR BUFFER CLASS ____________________________________________________________________________________________
+// // 
+// // olorBuffer::~ColorBuffer()
+// {
+// //        glDeleteBuffers(1, &ID);
+// }
+// // olorBuffer::ColorBuffer(Vec4 *ColorData, GLsizei count)
+//            : ElementCount(count),
+//              ID(0)
+// {
+//     Data = new Vec4[count];
+//     memcpy(Data, ColorData, sizeof(Vec4) * count);
+//     glGenBuffers(1 , &ID);
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//         glBufferData(GL_ARRAY_BUFFER, ElementCount * sizeof(Vec4), ColorData, GL_STATIC_DRAW) ; 
+//     glBindBuffer(GL_ARRAY_BUFFER, 0); //Unbind BUFFER_ID since its now bound to the ID;
+// }
+// // oid ColorBuffer::Bind()
+// {
+// #if _OPENGL_FIXED_FUNCTION
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//     glColorPointer(4, GL_FLOAT, 0, (char *) NULL);
+//     glEnableClientState(GL_COLOR_ARRAY);
+// #else
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//     glVertexAttribPointer(Shader::ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+// #endif
+// 
+// }
+// // oid ColorBuffer::Unbind()
+// {
+// #if _DEBUG
+// #if _OPENGL_FIXED_FUNCTION
+//          glDisableClientState(GL_COLOR_ARRAY);
+//     glBindBuffer(GL_ARRAY_BUFFER,0);
+// #else
+//     glBindBuffer(GL_ARRAY_BUFFER,0);
+// #endif
+// #else
+// #endif
+// } 
+// // 
+// // //==================================================================================================================================================
+// //__________________________________ NORMAL BUFFER CLASS ___________________________________________________________________________________________
+// // TODO: Much work needs to be done here.
+// // ormalBuffer::~NormalBuffer()
+// {
+// //    glDeleteBuffers(1, &ID);
+// }
+// // ormalBuffer::NormalBuffer(Vec4 *NormalData, GLsizei count)
+//             : ElementCount(count),
+//               ID(0)
+// {
+//     Data = new Vec4[count];
+//     memcpy(Data, NormalData, sizeof(Vec4) * count);
+//     glGenBuffers(1 , &ID);
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//         glBufferData(GL_ARRAY_BUFFER, ElementCount * sizeof(Vec4), NormalData, GL_STATIC_DRAW) ; 
+//     glBindBuffer(GL_ARRAY_BUFFER,0); 
+// }
+// // oid NormalBuffer::Bind()
+//                 
+// {
+// #if _OPENGL_FIXED_FUNCTION
+//     glBindBuffer(GL_ARRAY_BUFFER, ID); // 
+//         glNormalPointer(GL_FLOAT, 0, (void *) NULL);
+//         _GL(glEnableClientState(GL_NORMAL_ARRAY));
+// #else
+//     glBindBuffer(GL_ARRAY_BUFFER, ID);
+//     glVertexAttribPointer(Shader::NormalsLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+// #endif
+// }
+// // oid NormalBuffer::Unbind()
+// {
+// #if _DEBUG
+// #if _OPENGL_FIXED_FUNCTION
+//            glDisableClientState(GL_NORMAL_ARRAY);
+//        glBindBuffer(GL_ARRAY_BUFFER,0);
+// #else
+//     glBindBuffer(GL_ARRAY_BUFFER, 0);
+// #endif
+// #endif
+// }
+// // 
+// // ormalBuffer::NormalBuffer(Vec3 *NormalData, GLsizei vcount)
+// 	: ElementCount(vcount),
+// 	ID(0)
+// {
+// 	Vec4 *tempdata = new Vec4[vcount];
+// 
+// 	for_loop(Index, vcount)
+//	{
+//		tempdata[Index] = Vec4(NormalData[Index].r, NormalData[Index].g, NormalData[Index].b, 1.0f);
+//	}
+// 	*this = NormalBuffer(tempdata, vcount);
+// 	delete[]tempdata;
+// }
+
+
+
+
+
+//      ~Image();
+//      Image(const char *filename);
+//      Image(GLenum param, const char *filename);
+//  
+//      GLuint ID;
+//  
+//  	GLuint Width,
+//  		   Height,
+//  		   ImageSize;
+//  
+//      GLubyte* LoadBMP(const char *filename); // Possibly make this Static and return an entire Image object
+//  
+//      inline void SetSize(float width, float height);
+//  
+//      void GenColorTexture(float width, float height);
+//      void GenDepthTexture(float width, float height);
+//      void Bind();
+//      void Unbind();
+//  
+//      void VerticalFlip();// void *image, int w, int h, int bytes_per_pixel)
+//  
+//  	GLint MaxTextureSize();
+//  private:
+//  
+//  	GLubyte header[54];
+//  	GLuint  dataPos;
+//  
+//  	GLubyte *Data;
+//  	GLint MaxTexture;
+//  
+//  };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class UVBuffer
+//   {
+//   public:
+//       UVBuffer();
+//       ~UVBuffer();
+//		UVBuffer(Vec2 *UVdata, GLsizei count); //UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+//
+//       GLuint ID;
+//       GLuint ElementCount;
+//
+//       Vec2    *Data;
+//       //Image Picture;
+//   public:
+//
+//       void Bind();
+//       void Unbind();
+//   };
+// //_______________________________________________________________________________________________________________________________________________________________
+// class TextureBuffer
+//  {
+//  	TextureBuffer();
+//  	~TextureBuffer();
+//  
+//  
+//  	Image    *Texture;
+//  	UVBuffer *TextureCoords;
+//  
+//  	void Bind();
+//  	void Unbind();
+//  };
+// //_______________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  void Sphere::Update()
+//  {
+//  }
+//  	  ViewMatrix = glm::translate(Matrix(1), Position);
+  	  ViewMatrix = glm::rotate(ViewMatrix, (float)RADIANS(Rotation.y), Up);
+	  ViewMatrix = glm::rotate(ViewMatrix, (float)RADIANS(Rotation.x), Right);
+	  ViewMatrix = glm::inverse(ViewMatrix);
+
+
+
+  	// ClampCamera();
+  	Vec3 newFront;
+  	newFront.x = cos(glm::radians(Rotation.y)) * cos(glm::radians(Rotation.x));
+  	newFront.y = sin(glm::radians(Rotation.x));
+  	newFront.z = sin(glm::radians(Rotation.y)) * cos(glm::radians(Rotation.x));
+    	Forward = glm::normalize(newFront);
+  
+  	///Also re-calculate the Right and Up vector
+  	Right = glm::normalize(glm::cross(Forward, Up));
+  	Up = glm::normalize(glm::cross(Right, Forward));
+  void Sphere::Render()
+  {
+  
+  	glPushMatrix();
+  	glTranslatef(Position.x, Position.y, Position.z);
+  	glRotatef(Rotation.x, 1, 0, 0);
+  	glRotatef(Rotation.z, 0, 0, 1);
+  	glRotatef(Rotation.y, 0, 1, 0);
+  	Polygons->Bind();
+  	//glDrawArrays(GL_TRIANGLE_STRIP, 0, VertexCount);
+  	glDrawElements(GL_TRIANGLE_STRIP, Polygons->Indices->ElementCount , GL_UNSIGNED_INT, nullptr);
+  	Polygons->Unbind();
+  	glPopMatrix();
+  }
+
+
+
+  	if (BatchID != 0)
+	{
+	Indices->Unbind();
+
+ 	}
+	else
+	{
+
+
+
+
+  	if (BatchID != 0)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, BatchID);
+		if (Indices)    Indices->Bind();
+		GLuint Location = glGetAttribLocation(Shader::GetActiveShader()->Name(), "VertexPosition");
+		glEnableVertexAttribArray(Location);
+ 		_GL(glVertexAttribPointer(Location, 3, GL_FLOAT, GL_FALSE, 0, 0));
+
+		Location = glGetAttribLocation(Shader::GetActiveShader()->Name(), "VertexNormal");
+		glEnableVertexAttribArray(Location);
+ 		_GL(glVertexAttribPointer(Location, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(NormalsOffset)));
+
+		Location = glGetAttribLocation(Shader::GetActiveShader()->Name(), "VertexColor");
+		glEnableVertexAttribArray(Location);
+		_GL(glVertexAttribPointer(Location, 4, GL_FLOAT, GL_FALSE,0, BUFFER_OFFSET(ColorsOffset)));
+
+	}
+	else
+	{ 
