@@ -270,6 +270,7 @@ public:
 
 	void Update()
 	{
+		Camera.Update();
 		for (auto& G : Groups)
 		{
 			G.Update();
@@ -277,7 +278,6 @@ public:
 	}
 	void Render()
 	{
-
 		if (Surface != NULL)
 		{
 			Surface->Bind();

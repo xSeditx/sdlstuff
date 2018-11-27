@@ -21,7 +21,7 @@ void Mesh::Bind()
 		Surface->Bind(); // This seems like its going to get called to much. // If there is multiple levels The Uniforms are going to get passed way to much and I will have to call// Set uniform entirely to much unless I change something.// Make this the first stop if more performance is needed
 	}
 	
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	_TRANSFORM();
 	Polygons->Bind();
 #else
@@ -31,7 +31,7 @@ void Mesh::Bind()
 	Shader::GetActiveShader()->SetCacheUniforms(MVP * Transform); //SetUniformMat4("ModelViewProjectionMatrix", MVP * Transform);
 #endif
 }
-void Mesh::Unbind()
+void Mesh::Unbind()  
 {
 #if _DEBUG
 	Polygons->Unbind();
@@ -40,7 +40,7 @@ void Mesh::Unbind()
 		Surface->Unbind();
 	}
 #endif
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	glPopMatrix();
 #endif
 }
@@ -49,8 +49,8 @@ void Mesh::Render()
 	Update();
 	Bind();
 	_GL(glDrawElements(GL_TRIANGLES, Polygons->Indices->ElementCount, GL_UNSIGNED_INT, nullptr));
-	glBindVertexArray(0);
-//	Unbind();
+//	glBindVertexArray(0);
+	Unbind();
 
 }
 void Mesh::Update() 

@@ -1,10 +1,11 @@
 #include"camera.h"
 
 Viewport *Viewport::Camera;
- 
 
 
-#if _OPENGL_FIXED_FUNCTION
+
+
+#ifdef _OPENGL_FIXED_FUNCTION
 
 Viewport::Viewport(Vec3 position, Vec3 rotation)
 {

@@ -84,27 +84,24 @@ Print("Vendor: "; Print(glGetString(GL_VENDOR)));
 Print("Current Context: "; Print(wglGetCurrentContext()));
 
 	//-------------------------------------------------------------------------------------------------------------
- 
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	 
-	 glVertexAttribPointer(Shader::VertexLocation, 3, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	  
-	 glVertexAttribPointer(Shader::NormalsLocation, 3, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	  
-	 glVertexAttribPointer(Shader::ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	  
+
 
 //	 void DebugMessageCallbackARB(DEBUGPROCARB callback,
 //		 const void* userParam);
 	  
- #if	_OPENGL_FIXED_FUNCTION
+#ifdef	_OPENGL_FIXED_FUNCTION
 	//Material *Surface = new Material();
 	//Surface->Renderer = new Shader("Resources\\FF.vert", "Resources\\FF.frag"); // Shader("Resources\\Basic.vert", "Resources\\Basic.frag");
  #else
+     GLuint vao;
+     glGenVertexArrays(1, &vao);
+     glBindVertexArray(vao);
+//
+//     glVertexAttribPointer(Shader::VertexLocation, 3, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//     glVertexAttribPointer(Shader::NormalsLocation, 3, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//     glVertexAttribPointer(Shader::ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//
      Material *Surface = new Material();
-	  
      Surface->SetRenderer(new Shader("Resources\\Basic.vert", "Resources\\Basic.frag"));  
  #endif
 
@@ -123,13 +120,13 @@ Print("Current Context: "; Print(wglGetCurrentContext()));
 	MainWin.World = new Scene();
 	MainWin.World->Camera = Viewport(Vec3(0, 0, 0), Vec3(0, 0, 0));
 	Viewport::Camera = &MainWin.World->Camera;
-//  MainWin.World->Groups[0].Add(Cube);
-//  MainWin.World->Groups[0].Add(Cube1);
-//  MainWin.World->Groups[0].Add(Cube2);
-//  MainWin.World->Groups[0].Add(Cube3);
-//  MainWin.World->Groups[0].Add(Cube4);
-//  MainWin.World->Groups[0].Add(Cube5);
-//  MainWin.World->Groups[0].Add(center);
+   MainWin.World->Groups[0].Add(Cube);
+   MainWin.World->Groups[0].Add(Cube1);
+   MainWin.World->Groups[0].Add(Cube2);
+   MainWin.World->Groups[0].Add(Cube3);
+   MainWin.World->Groups[0].Add(Cube4);
+   MainWin.World->Groups[0].Add(Cube5);
+   MainWin.World->Groups[0].Add(center);
 	 
 	for_loop(Index, 400)
 	{
@@ -143,6 +140,8 @@ Print("Current Context: "; Print(wglGetCurrentContext()));
 //	glDrawElementsInstanced(GL_TRIANGLES, 24, GL_FLOAT, MainWin.World->Groups[0].Objects[0].Polygons->Indices, 1);
 	while (MainWin.EventLoop())
 	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 		{
 			//Performance.Start();
 			BenchMark Performance;

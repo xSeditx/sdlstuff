@@ -68,7 +68,7 @@ VertexBuffer::VertexBuffer(Vec3 *vertexdata, GLsizei vcount)
 }
 void VertexBuffer::Bind()
 {
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	_GL(glVertexPointer(4, GL_FLOAT, 0, (char *)NULL));
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -130,7 +130,7 @@ IndexBuffer::IndexBuffer(GLuint *data, GLsizei count)
 }
 void IndexBuffer::Bind()
 {
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 	glIndexPointer(GL_FLOAT, 0, (void *)NULL);
 	glEnableClientState(GL_INDEX_ARRAY);
@@ -172,7 +172,7 @@ ColorBuffer::ColorBuffer(Vec4 *ColorData, GLsizei count)
 }
 void ColorBuffer::Bind()
 {
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glColorPointer(4, GL_FLOAT, 0, (char *)NULL);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -216,7 +216,7 @@ NormalBuffer::NormalBuffer(Vec4 *NormalData, GLsizei count)
 void NormalBuffer::Bind()
 
 {
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 	glBindBuffer(GL_ARRAY_BUFFER, ID); // 
 	glNormalPointer(GL_FLOAT, 0, (void *)NULL);
 	_GL(glEnableClientState(GL_NORMAL_ARRAY));
@@ -288,7 +288,7 @@ void VAOBuffer::Bind()
 	if (Woven == true)
 	{
 
-#if  _OPENGL_FIXED_FUNCTION
+#ifdef  _OPENGL_FIXED_FUNCTION
 		glBindBuffer(GL_ARRAY_BUFFER, BatchID);
 		glVertexPointer(4, GL_FLOAT, sizeof(VertexType), (char *)NULL);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -303,10 +303,6 @@ void VAOBuffer::Bind()
 		Indices->Bind();
 #else
 	 	glBindVertexArray(VAO);
-		//	glBindBuffer(GL_ARRAY_BUFFER, BatchID);
-		//	glVertexAttribPointer(Shader::VertexLocation, 4, GL_FLOAT, GL_FALSE,  sizeof(VertexType), (void*)0);
-		//	glVertexAttribPointer(Shader::ColorsLocation, 4, GL_FLOAT, GL_FALSE,  sizeof(VertexType), (void*)(sizeof(float) * 4));
-		//	glVertexAttribPointer(Shader::NormalsLocation, 4, GL_FLOAT, GL_FALSE,  sizeof(VertexType), (void*)( sizeof(float) * 8));
  		Indices->Bind();
 #endif
 

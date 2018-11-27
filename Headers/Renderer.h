@@ -2,7 +2,6 @@
 
 #include<vector>
 
-
 #include"WindowGLSDL.h"
 #include"shader.h"
 #include"camera.h"
@@ -10,7 +9,7 @@
 #include"Buffers.h" // remove this later down the line.
 #include"FrameBuffer.h"
 
-#define _OPENGL_FIXED_FUNCTION         OFF //  //
+#define _OPENGL_FIXED_FUNCTION        //  ON// OFF //  //
 
 
 
@@ -25,7 +24,6 @@
 #define COLOR_ATTRIB      3
 
 #define BUFFER_OFFSET(i)   ((char *)NULL + (i))
-
 
 
 #define _TRANSFORM() glPushMatrix();\

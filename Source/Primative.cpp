@@ -151,7 +151,6 @@ Block::Block(Vec3 pos, float size)
 
 	// Averages all the normals so Each Faces Vertices have normals facing straight out to prevent interpolation of the light
 	// Across the block
-
 	// for(int Index = 0; Index < 24 ; Index += 4)
 	// {
 	//     Vec3 Norm =  NormalData[Index]   +
@@ -324,15 +323,17 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 			IndexCount += 6;
 		}
 	}
-	//	glGenVertexArrays(1, &BatchID);
+
 	Polygons = new VAOBuffer();
-	 
 	Polygons->Vertices = new VertexBuffer(Vertices, VertexCount);
 	Polygons->Indices = new IndexBuffer(Indices, IndexCount);
 	Polygons->Colors = new ColorBuffer(Colors, ColorCount);
 //	Polygons->Normals = new NormalBuffer(Normals, VertexCount);
-	 
+
+#ifdef _OPENGL_FIXED_FUNCTION
+#else
 	Polygons->Interleave();
+#endif
 }
 
 

@@ -10,6 +10,8 @@
 
 #include"Shader.h"
 
+std::vector<Shader *> Shader::ActiveShader;
+
 
 Shader::Shader(const char* vertpath, const char* fragpath)
 	: m_Vertpath(vertpath), m_Fragpath(fragpath)
@@ -19,21 +21,20 @@ Shader::Shader(const char* vertpath, const char* fragpath)
 
 	_GL(glUseProgram(ID));
 	 
-	VertexLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");
-	glEnableVertexAttribArray(VertexLocation);
-	glVertexAttribPointer(VertexLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	 
-	//NormalsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal");
-	//glEnableVertexAttribArray(NormalsLocation);
-	//glVertexAttribPointer(NormalsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	 
-	ColorsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");
-	glEnableVertexAttribArray(ColorsLocation);
-	glVertexAttribPointer(ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//	VertexLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");
+//	glEnableVertexAttribArray(VertexLocation);
+//	glVertexAttribPointer(VertexLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//	 
+//	//NormalsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal");
+//	//glEnableVertexAttribArray(NormalsLocation);
+//	//glVertexAttribPointer(NormalsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
+//	 
+//	ColorsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");
+//	glEnableVertexAttribArray(ColorsLocation);
+//	glVertexAttribPointer(ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
 	 
 	MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
 	 
-	Enable();
 }
 Shader::Shader()
 {

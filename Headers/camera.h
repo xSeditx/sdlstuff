@@ -13,9 +13,9 @@
 //
 =================================================================================================================================================================
 */
+#define _OPENGL_FIXED_FUNCTION    
 
-
-#if _OPENGL_FIXED_FUNCTION
+#ifdef _OPENGL_FIXED_FUNCTION
 class Viewport
 {
 public:
