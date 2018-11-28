@@ -16,7 +16,7 @@ void VAO::Bind()
 }
 void VAO::Unbind()
 {
-	glBindVertexArray(0);
+//	glBindVertexArray(0);
 }
 void VAO::EnableAttribute(GLuint ind)
 {
@@ -25,7 +25,7 @@ void VAO::EnableAttribute(GLuint ind)
 void VAO::DisableAttribute(GLuint ind)
 {
 #ifdef _DEBUG
-	glDisableVertexAttribArray(ind);
+	//glDisableVertexAttribArray(ind);
 #endif
 }
 int  VAO::MaxAttributes()
@@ -74,7 +74,6 @@ void VertexBuffer::Bind()
 	glEnableClientState(GL_VERTEX_ARRAY);
 #else
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glVertexAttribPointer(Shader::VertexLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
 #endif
 }
 
@@ -147,7 +146,7 @@ void IndexBuffer::Unbind()
 #else
 
 #endif
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #else
 #endif
 }
@@ -189,7 +188,7 @@ void ColorBuffer::Unbind()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #else
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
 #else
 #endif
@@ -232,7 +231,7 @@ void NormalBuffer::Unbind()
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #else
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
 #endif
 }
@@ -261,6 +260,8 @@ VAOBuffer::VAOBuffer()
 	Textures = nullptr;
 	Indices = nullptr;
 	Colors = nullptr;
+
+
 }
 void VAOBuffer::Attach(VertexBuffer  *vertices)
 {
@@ -309,11 +310,26 @@ void VAOBuffer::Bind()
 	}
 	else
 	{
+
+
 		if (Vertices)  Vertices->Bind();
+		GLuint Vpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition"); glEnableVertexAttribArray(Vpoint);
+		glVertexAttribPointer(Vpoint, 4, GL_FLOAT, GL_FALSE, 0, (char)NULL);
+
+
 		if (Indices)    Indices->Bind();
+
 		if (Textures)  Textures->Bind();
+		//glActiveTexture(GL_TEXTURE0);
+		//Image::Manager.GetAsset("Moon")->Bind();
+
 		if (Colors)      Colors->Bind();
+		GLuint Cpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");	glEnableVertexAttribArray(Cpoint);
+		glVertexAttribPointer(Cpoint, 4, GL_FLOAT, GL_FALSE, 0, (void*)NULL);
+
 		if (Normals)    Normals->Bind();
+		GLuint Npoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal"); glEnableVertexAttribArray(Npoint);
+		glVertexAttribPointer(Npoint, 4, GL_FLOAT, GL_FALSE, 0, (void*)NULL);
 	}
 }
 void VAOBuffer::Interleave()
@@ -322,9 +338,9 @@ void VAOBuffer::Interleave()
 	for_loop(Index, Vertices->ElementCount)
 	{
 		VertexType temp;
-		temp.Vertex = Vertices->Data[Index];
 		temp.Color = Colors->Data[Index];
-//		temp.Normals = Normals->Data[Index];
+		temp.Vertex = Vertices->Data[Index];
+		temp.Normals = Normals->Data[Index];
 		Buffer.push_back(temp);
 	}
 	Woven = true;
@@ -334,28 +350,24 @@ void VAOBuffer::Interleave()
 	glUseProgram(Shader::GetActiveShader()->GetName());
 	GLuint Vpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition"); glEnableVertexAttribArray(Vpoint);
 	GLuint Cpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");	glEnableVertexAttribArray(Cpoint);
+	GLuint Npoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal"); glEnableVertexAttribArray(Npoint);
 	 
-//GLuint Npoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal"); glEnableVertexAttribArray(Npoint);
-//	 
-
 	glGenBuffers(1, &BatchID);
 	glBindBuffer(GL_ARRAY_BUFFER, BatchID);
 	glBufferData(GL_ARRAY_BUFFER, (Vertices->ElementCount * 3) * sizeof(Vec4), &Buffer[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(Vpoint, 4, GL_FLOAT, GL_FALSE, sizeof(VertexType), (char *)NULL);
 	glVertexAttribPointer(Cpoint, 4, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)(sizeof(float) * 4));
-	//glVertexAttribPointer(Npoint, 4, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)(sizeof(float) * 8));
- 
-
+	glVertexAttribPointer(Npoint, 4, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)(sizeof(float) * 8));
 }
 void VAOBuffer::Unbind()
 {
 #if _DEBUG
-	if (Vertices)  Vertices->Unbind();
-	if (Indices)    Indices->Unbind();
-	if (Textures)  Textures->Unbind();
-	if (Colors)      Colors->Unbind();
-	if (Normals)    Normals->Unbind();
+//	if (Vertices)  Vertices->Unbind();
+//	if (Indices)    Indices->Unbind();
+//	if (Textures)  Textures->Unbind();
+//	if (Colors)      Colors->Unbind();
+//	if (Normals)    Normals->Unbind();
 #endif
 }
 

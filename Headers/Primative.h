@@ -21,38 +21,30 @@ public:
 	std::vector<Vec4>    ColorList;
 	std::vector<GLuint>  IndexList;
 
-	// Vec3     Verts[24];
-	// Vec3     Norms[24];
-	// Vec2        UV[24];
-	//	GLuint               Indice[36];
+//	IndexBuffer    *Indices;
+//	VertexBuffer   *Vertices;
+//	NormalBuffer   *Normals;
+//	ColorBuffer    *Colors;
 
-	IndexBuffer    *Indices;
-	VertexBuffer   *Vertices;
-	NormalBuffer   *Normals;
-
-	//	Vec3                Color[24];
-	ColorBuffer    *Colors;
 };
 class Sphere : public Mesh
 {
 public:
-	// Vec3 Position;
-	Vec3 Rotation;
-	Vec3 Scale;
 
 	int   Mesh_ID;
 
 	float Radius;
 
-public:// OpenGL Stuff
+public:  // OpenGL Stuff
 
 	Sphere() {}
 	Sphere(Vec3 pos, float radius, int sectors);
 
 	Vec3  Vertices[648];
 	Vec3  Normals[648];
-	GLuint Indices[972];
+	Vec2  UVcoord[684];
 	RGBf  Colors[648];
+	GLuint Indices[972];
 
 	GLuint VertexCount;
 	GLuint ColorCount;

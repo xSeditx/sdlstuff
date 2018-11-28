@@ -1,5 +1,8 @@
 #include"Texture.h"
 
+
+AssetManager<Image> Image::Manager;
+
 //======================================================================================================================================================================================
 //                                                    IMAGE CLASS                                                                                                                                   
 //======================================================================================================================================================================================
@@ -17,16 +20,17 @@ Image::~Image()
 	}
 }
 Image::Image()
-	: ID(0),
+	:
+	ID(0),
 	Data(nullptr),
 	Width(0),
 	Height(0)
 {
-
-	//  glEnable(GL_TEXTURE_2D);  
 }
-Image::Image(const char *filename)
-	: ID(0)
+Image::Image(char* name, const char *filename)
+	:
+	ID(0),
+	Name(name)
 {
 	//   glEnable(GL_TEXTURE_2D);
 	Data = LoadBMP(filename);
@@ -46,8 +50,8 @@ Image::Image(const char *filename)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_BGR, GL_UNSIGNED_BYTE, Data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-Image::Image(GLenum param, const char *filename)
-	: ID(0)
+Image::Image(char* name, GLenum param, const char *filename)
+	: ID(0), Name(name)
 	// This is to load images for a Cube map. Allowing Params to be added as well.
 {
 	// glEnable(GL_TEXTURE_2D);
@@ -91,6 +95,8 @@ Image::Image(GLenum param, const char *filename)
 		glTexImage2D(param, 0, GL_RGBA, Width, Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, Data);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	ID = Manager.Add(this);
 }
 void Image::Bind()
 {
@@ -263,7 +269,7 @@ void UVBuffer::Unbind()
 {
 #ifdef _DEBUG
 	//  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableVertexAttribArray(TEXTURE_ATTRIB);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glDisableVertexAttribArray(TEXTURE_ATTRIB);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
 }

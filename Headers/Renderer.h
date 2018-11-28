@@ -9,8 +9,7 @@
 #include"Buffers.h" // remove this later down the line.
 #include"FrameBuffer.h"
 
-#define _OPENGL_FIXED_FUNCTION        //  ON// OFF //  //
-
+//#define _OPENGL_FIXED_FUNCTION  
 
 
 //=========================================== DEBUG SWITCHES ==========================================================

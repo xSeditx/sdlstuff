@@ -20,21 +20,10 @@ Shader::Shader(const char* vertpath, const char* fragpath)
 	ActiveShader.push_back(this);
 
 	_GL(glUseProgram(ID));
-	 
-//	VertexLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");
-//	glEnableVertexAttribArray(VertexLocation);
-//	glVertexAttribPointer(VertexLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-//	 
-//	//NormalsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal");
-//	//glEnableVertexAttribArray(NormalsLocation);
-//	//glVertexAttribPointer(NormalsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-//	 
-//	ColorsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");
-//	glEnableVertexAttribArray(ColorsLocation);
-//	glVertexAttribPointer(ColorsLocation, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL);
-	 
-	MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
-	 
+#ifdef _OPENGL_FIXED_FUNCTION	 
+#else
+ 	MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
+#endif
 }
 Shader::Shader()
 {
@@ -52,9 +41,10 @@ void Shader::Delete()
 void Shader::Enable()
 {
 	
-	if (GetActiveShader()->ID != this->ID)
+	if ( GetActiveShader()->ID != this->ID)
 	{
 		glUseProgram(ID);
+		ActiveShader.push_back(this);
 		MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
 		for (auto &Uni : Uniforms)
 		{
@@ -85,6 +75,7 @@ void Shader::Enable()
 }
 void Shader::Disable()
 {
+	ActiveShader.pop_back();
 	glUseProgram(0);
 }
  
@@ -178,10 +169,10 @@ GLuint Shader::Load()
 		EngineErrorResponse(0x11, fragment, (char*)m_Fragpath);
 		return 0;
 	}
-	 
 	glAttachShader(program, vertex);
 	glAttachShader(program, fragment);
-	 
+	glBindAttribLocation(program, 10, "VertexPosition");
+	glBindAttribLocation(program, 12, "VertexColor");
 #if	_OPENGL_FIXED_FUNCTION
 #else
 	//		VertexLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");

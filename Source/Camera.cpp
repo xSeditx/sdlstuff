@@ -88,7 +88,7 @@ Viewport::Viewport(Vec3 position, Vec3 rotation)
 {
 	FOV = 60.0;
 	AspectRatio = 640.0f / 480.0f;
-	Near = 1.0f;
+	Near = .10f;
 	Far = 1024.0f;
 
 	Speed = 1.0;
@@ -130,11 +130,11 @@ void Viewport::Rotate(float pitch, float yaw)
 }
 void Viewport::MoveForward(float speed)
 {
-	Position -= (Speed * Forward);
+	Position -= (speed * Forward);
 }
 void Viewport::MoveBack(float speed)
 {
-	Position += (Speed * Forward);
+	Position += (speed * Forward);
 }
 void Viewport::MoveLeft(float speed)
 {

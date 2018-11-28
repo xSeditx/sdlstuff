@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Buffers.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Core.cpp" />
@@ -145,11 +146,10 @@
     <ClCompile Include="Source\Primative.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\WindowGLFW.cpp" />
     <ClCompile Include="Source\WindowGLSDL.cpp" />
-    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Source\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\camera.h" />
@@ -161,11 +161,12 @@
     <ClInclude Include="Headers\WindowGLFW.h" />
     <ClInclude Include="Headers\WindowGLSDL.h" />
     <ClInclude Include="Headers\shader.h" />
-    <ClInclude Include="Source\buffers.h" />
-    <ClInclude Include="Source\FrameBuffer.h" />
-    <ClInclude Include="Source\Texture.h" />
-    <ClInclude Include="Source\Window.h" />
-    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Headers\buffers.h" />
+    <ClInclude Include="Headers\FrameBuffer.h" />
+    <ClInclude Include="Headers\Texture.h" />
+    <ClInclude Include="Headers\Window.h" />
+    <ClInclude Include="Headers\Sprite.h" />
+    <ClInclude Include="Headers\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\basic.frag" />
@@ -174,6 +175,7 @@
     <None Include="Resources\ff.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="API.txt" />
     <Text Include="Resources\OldShaders.txt" />
     <Text Include="Resources\Removed.txt" />
   </ItemGroup>

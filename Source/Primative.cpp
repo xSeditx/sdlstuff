@@ -141,7 +141,7 @@ Block::Block(Vec3 pos, float size)
 	for_loop(Index, 24)
 	{
 		VertexList.push_back(V[Index]);
-		//	TextureCoords.push_back(UVs[Index]);
+		TextureCoords.push_back(UVs[Index]);
 		NormalList.push_back(NormalData[Index]);
 	}
 	for_loop(Index, 36)
@@ -169,17 +169,14 @@ Block::Block(Vec3 pos, float size)
 	//
 
 
-	Vertices = new VertexBuffer(&VertexList[0], 24);
-	Indices = new IndexBuffer(&IndexList[0], 36);
-	Colors = new ColorBuffer(&Cols[0], 24);
-	Normals = new NormalBuffer(&NormalList[0], 24);
 
 	Polygons = new VAOBuffer();
 
-	Polygons->Attach(Vertices);
-	Polygons->Attach(Indices);
-	Polygons->Attach(Normals);
-	Polygons->Attach(Colors);
+	Polygons->Attach(new VertexBuffer(&VertexList[0], 24));
+	Polygons->Attach(new UVBuffer(&TextureCoords[0], 24));
+	Polygons->Attach(new NormalBuffer(&NormalList[0], 24));
+	Polygons->Attach(new ColorBuffer(&Cols[0], 24));
+	Polygons->Attach(new IndexBuffer(&IndexList[0], 36));
 
 	Transform = glm::mat4(1.0f); // Set Identity and Rotate all axis followed with the Translation.
 	Transform = glm::rotate(Transform, glm::radians(Rotation.x), Vec3(1.0f, 0.0f, 0.0f));
@@ -187,7 +184,7 @@ Block::Block(Vec3 pos, float size)
 	Transform = glm::rotate(Transform, glm::radians(Rotation.z), Vec3(0.0f, 0.0f, 1.0f));
 	Transform = glm::translate(Transform, Position);
 	Rotation = Vec3(rand() % 360, rand() % 360, rand() % 360);
-
+ 
 	// model_matrix = glm::translate(glm::rotate(glm::scale( mat4(1.0f), scaling), rotation_angle, rotation_axis), translation);
 	// glm::mat4 myModelMatrix = myTranslationMatrix * myRotationMatrix * myScaleMatrix;
 	// glm::vec4 myTransformedVector = myModelMatrix * myOriginalVector;
@@ -207,29 +204,35 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 	float x1 = 0, y1 = 0, z1 = 0;
 	float x2 = 0, y2 = 0, z2 = 0;
 	float x3 = 0, y3 = 0, z3 = 0;
+	float Widthinc = (Image::Manager.GetAsset("Moon")->Width / 360);
+	float Heightinc = (Image::Manager.GetAsset("Moon")->Height / 180);
+	float Uinc = (1.0f / (Image::Manager.GetAsset("Moon")->Width)) * Widthinc; //* size;
+	float Vinc = (1.0f / (Image::Manager.GetAsset("Moon")->Height))* Heightinc; // * size;
+
+	float Ucoord = 0, Vcoord = 0;
+
 	std::vector<GLuint> Ind;
-	for (float Long = 0;Long < 360;Long += size) {
-		for (float Lat = 0;Lat < 180;Lat += size) {
-			x = radius * (sin(RADIANS(Lat)) * cos(RADIANS(Long)));
-			y = radius * (sin(RADIANS(Lat)) * sin(RADIANS(Long)));
-			z = radius *  cos(RADIANS(Lat));
+	for (float Lat = 0;Lat < 360;Lat += size) {
+		for (float Long = 0;Long < 180;Long += size) { // 90 draws top half of a sphere
+			x = radius * (sin(RADIANS(Long)) * cos(RADIANS(Lat)));
+			y = radius * (sin(RADIANS(Long)) * sin(RADIANS(Lat)));
+			z = radius *  cos(RADIANS(Long));
 
-			x1 = radius * (sin(RADIANS(Lat + size)) * cos(RADIANS(Long)));
-			y1 = radius * (sin(RADIANS(Lat + size)) * sin(RADIANS(Long)));
-			z1 = radius *  cos(RADIANS(Lat + size));
+			x1 = radius * (sin(RADIANS(Long + size)) * cos(RADIANS(Lat)));
+			y1 = radius * (sin(RADIANS(Long + size)) * sin(RADIANS(Lat)));
+			z1 = radius *  cos(RADIANS(Long + size));
 
-			x2 = radius * (sin(RADIANS(Lat)) * cos(RADIANS(Long + size)));
-			y2 = radius * (sin(RADIANS(Lat)) * sin(RADIANS(Long + size)));
-			z2 = radius *  cos(RADIANS(Lat));
+			x2 = radius * (sin(RADIANS(Long)) * cos(RADIANS(Lat + size)));
+			y2 = radius * (sin(RADIANS(Long)) * sin(RADIANS(Lat + size)));
+			z2 = radius *  cos(RADIANS(Long));
 
-			x3 = radius * (sin(RADIANS(Lat + size)) * cos(RADIANS(Long + size)));
-			y3 = radius * (sin(RADIANS(Lat + size)) * sin(RADIANS(Long + size)));
-			z3 = radius *  cos(RADIANS(Lat + size));
+			x3 = radius * (sin(RADIANS(Long + size)) * cos(RADIANS(Lat + size)));
+			y3 = radius * (sin(RADIANS(Long + size)) * sin(RADIANS(Lat + size)));
+			z3 = radius *  cos(RADIANS(Long + size));
 
 			Colors[ColorCount].r = GL_Color(x * 255);
 			Colors[ColorCount].g = GL_Color(y * 255);
 			Colors[ColorCount].b = GL_Color(z * 255);
-
 			Vertices[VertexCount].x = x;
 			Vertices[VertexCount].y = y;
 			Vertices[VertexCount].z = z;
@@ -257,13 +260,37 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 			Vertices[VertexCount + 3].z = z3;
 
 
-			Ind.push_back(VertexCount);
-			Ind.push_back(VertexCount + 1);
-			Ind.push_back(VertexCount + 2);
+
+//
+//		UVcoord[VertexCount + 0].x = Uinc * (Lat + size);
+//		UVcoord[VertexCount + 0].y = Vinc * (Long  );
+//
+//		UVcoord[VertexCount + 1].x = Uinc *(Lat );
+//		UVcoord[VertexCount + 1].y = Vinc *(Long + size);
+//
+//		UVcoord[VertexCount + 2].x = Uinc * (Lat + size);
+//		UVcoord[VertexCount + 2].y = Vinc * (Long + size);
+//
+//
+//		UVcoord[VertexCount + 3].x = Uinc * (Lat );
+//		UVcoord[VertexCount + 3].y = Vinc * (Long );
+ 
+ 
+
+			// 01
+			// 11
+			// 00 
+			// 10
+
 
 			Ind.push_back(VertexCount + 1);
 			Ind.push_back(VertexCount + 3);
 			Ind.push_back(VertexCount + 2);
+			Ind.push_back(VertexCount);
+			Ind.push_back(VertexCount + 1);
+			Ind.push_back(VertexCount + 2);
+
+
 
 			Indices[IndexCount] = VertexCount;
 			Indices[IndexCount + 1] = VertexCount + 1;
@@ -272,6 +299,7 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 			Indices[IndexCount + 3] = VertexCount + 1;
 			Indices[IndexCount + 4] = VertexCount + 3;
 			Indices[IndexCount + 5] = VertexCount + 2;
+
 
 
 			float  magnitude = sqrt(Squared(x) + Squared(y) + Squared(z));
@@ -321,20 +349,38 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 			VertexCount += 4;
 			ColorCount += 4;
 			IndexCount += 6;
+
 		}
 	}
+   int c = 0;
+   for (float Long = 0; Long < 360;Long += size)
+   {
+	   for (float Lat = 0; Lat < 180;Lat += size)
+	   {
+		   UVcoord[c + 0].x = Uinc * (Lat);
+		   UVcoord[c + 0].y = Vinc * (Long);
 
+		   UVcoord[c + 1].x = Uinc * (Lat + size);
+		   UVcoord[c + 1].y = Vinc * (Long + size);
+
+		   UVcoord[c + 2].x = Uinc * (Lat + size);
+		   UVcoord[c + 2].y = Vinc * (Long + size);
+
+		   UVcoord[c + 3].x = Uinc * (Lat + size);
+		   UVcoord[c + 3].y = Vinc * (Long);
+		   c += 4;
+	   }
+   }
+ 
 	Polygons = new VAOBuffer();
 	Polygons->Vertices = new VertexBuffer(Vertices, VertexCount);
 	Polygons->Indices = new IndexBuffer(Indices, IndexCount);
 	Polygons->Colors = new ColorBuffer(Colors, ColorCount);
-//	Polygons->Normals = new NormalBuffer(Normals, VertexCount);
-
-#ifdef _OPENGL_FIXED_FUNCTION
-#else
-	Polygons->Interleave();
-#endif
+ 	Polygons->Normals = new NormalBuffer(Normals, VertexCount);
+	Polygons->Textures = new UVBuffer(UVcoord, VertexCount);
 }
 
 
 
+//(1.0 + x / radius) * .5;
+//(1.0 + y / radius) * .5;

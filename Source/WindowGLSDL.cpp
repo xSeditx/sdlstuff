@@ -5,7 +5,6 @@ int BenchMark::ObjectCounter = 0 ;
 long long BenchMark::AverageTimer = 0 ;
 long long BenchMark::AverageResult = 0;
 
-
 Window *Window::SCREEN = nullptr;
 
 Window::Window(int x, int y, int width, int height, const char * title)
@@ -33,20 +32,27 @@ Window::Window(int x, int y, int width, int height, const char * title)
 #else
 	SDL_GameControllerEventState(SDL_IGNORE);
 #endif
-
+	
 
 // This will be coupled with many Defines to Cut the fat for better performance when desired filtering all but desired Events
 //	Uint8 SDL_EventState(Uint32 type,
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3.2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY); //  SDL_GL_CONTEXT_PROFILE_CORE);// 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
+
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 0);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+
 	SDL_HWND = SDL_CreateWindow
 	(
 		title,
@@ -55,6 +61,7 @@ Window::Window(int x, int y, int width, int height, const char * title)
 		width, height,
 		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 	);
+
 
 #ifdef _WIN32
 	SDL_SysWMinfo wmInfo;
@@ -71,6 +78,8 @@ Window::Window(int x, int y, int width, int height, const char * title)
 	OpenGLContext = SDL_GL_CreateContext(SDL_HWND);
 	SDL_GL_MakeCurrent(SDL_HWND, OpenGLContext);
 
+	GetOpenGLState();
+	GetOpenGLState();
 	if (SDL_HWND == NULL)
 	{
 		Print("Can Not Create Window");
@@ -98,8 +107,6 @@ Window::Window(int x, int y, int width, int height, const char * title)
 	}
  
 
-
-
 // OpenGL Setup stuff.
 
 	glShadeModel(GL_SMOOTH); 
@@ -108,8 +115,8 @@ Window::Window(int x, int y, int width, int height, const char * title)
 	glEnable(GL_DEPTH_TEST);
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glDisable(GL_COLOR_MATERIAL);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
  // glShadeModel(GL_FLAT);
  glFrontFace(GL_CCW);
@@ -392,7 +399,12 @@ void Window::MessageHandler(SDL_Event msg)
 
 void Window::CLS()
 {
-	_GL(glClearColor(0, 0, GL_Color(255), 1));
+	_GL(glClearColor(0, 0, GL_Color(200), 1));
+	_GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
+void Window::CLS(int r, int g, int b)
+{
+	_GL(glClearColor(GL_Color(r), GL_Color(g), GL_Color(b), 1));
 	_GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 void Window::Sync()
@@ -491,7 +503,6 @@ void SDLCheckError()
 		EngineErrorResponse(0x13, *error, NULL);
 	}
 }
-
 void EngineErrorResponse(int error, const int data, char *str)
 {
 	switch (error)
@@ -518,4 +529,163 @@ void EngineErrorResponse(int error, const int data, char *str)
 
 
 
+
+
+void GetOpenGLState()
+{
+	int Results;
+	bool success = false;
+
+
+	success = SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_RED_SIZE Error");
+	} else { Print("SDL_GL_RED_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_GREEN_SIZE Error");
+	} else { Print("SDL_GL_GREEN_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_BLUE_SIZE Error");
+	} else { Print("SDL_GL_BLUE_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ALPHA_SIZE Error");
+	} else { Print("SDL_GL_ALPHA_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_BUFFER_SIZE Error");
+	} else { Print("SDL_GL_BUFFER_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &Results);
+	if (success)
+	{
+		Print("SDL_GL_DOUBLEBUFFER Error");
+	} else { Print("SDL_GL_DOUBLEBUFFER :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_DEPTH_SIZE Error");
+	} else { Print("SDL_GL_DEPTH_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_STENCIL_SIZE Error");
+	} else { Print("SDL_GL_STENCIL_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ACCUM_RED_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ACCUM_RED_SIZE Error");
+	} else { Print("SDL_GL_ACCUM_RED_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ACCUM_GREEN_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ACCUM_GREEN_SIZE Error");
+	} else { Print("SDL_GL_ACCUM_GREEN_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ACCUM_BLUE_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ACCUM_BLUE_SIZE Error");
+	} else { Print("SDL_GL_ACCUM_BLUE_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ACCUM_ALPHA_SIZE Error");
+	} else { Print("SDL_GL_ACCUM_ALPHA_SIZE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_STEREO, &Results);
+	if (success)
+	{
+		Print("SDL_GL_STEREO Error");
+	} else { Print("SDL_GL_STEREO :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &Results);
+	if (success)
+	{
+		Print("SDL_GL_MULTISAMPLEBUFFERS Error");
+	} else { Print("SDL_GL_MULTISAMPLEBUFFERS :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &Results);
+	if (success)
+	{
+		Print("SDL_GL_MULTISAMPLESAMPLES Error");
+	} else { Print("SDL_GL_MULTISAMPLESAMPLES :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_ACCELERATED_VISUAL, &Results);
+	if (success)
+	{
+		Print("SDL_GL_ACCELERATED_VISUAL Error");
+	} else { Print("SDL_GL_ACCELERATED_VISUAL :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_RETAINED_BACKING, &Results);
+	if (success)
+	{
+		Print("SDL_GL_RETAINED_BACKING Error");
+	} else { Print("SDL_GL_RETAINED_BACKING :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_MAJOR_VERSION Error");
+	} else { Print("SDL_GL_CONTEXT_MAJOR_VERSION :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_MINOR_VERSION Error");
+	} else { Print("SDL_GL_CONTEXT_MINOR_VERSION :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_FLAGS, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_FLAGS Error");
+	} else { Print("SDL_GL_CONTEXT_FLAGS :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_PROFILE_MASK Error");
+	} else { Print("SDL_GL_CONTEXT_PROFILE_MASK :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, &Results);
+	if (success)
+	{
+		Print("SDL_GL_SHARE_WITH_CURRENT_CONTEXT Error");
+	} else { Print("SDL_GL_SHARE_WITH_CURRENT_CONTEXT :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, &Results);
+	if (success)
+	{
+		Print("SDL_GL_FRAMEBUFFER_SRGB_CAPABLE Error");
+	} else { Print("SDL_GL_FRAMEBUFFER_SRGB_CAPABLE :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_RELEASE_BEHAVIOR, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_RELEASE_BEHAVIOR Error");
+	} else { Print("SDL_GL_CONTEXT_RELEASE_BEHAVIOR :" << Results); }
+
+	success = SDL_GL_GetAttribute(SDL_GL_CONTEXT_EGL, &Results);
+	if (success)
+	{
+		Print("SDL_GL_CONTEXT_EGL Error");
+	} else { Print("SDL_GL_CONTEXT_EGL :" << Results);
+	}
+}
 #endif

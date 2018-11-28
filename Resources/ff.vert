@@ -1,10 +1,10 @@
 #version 120
  
-attribute vec4 Fcolor;
+varying vec4 Fcolor;
  
 void main()
 {
-
-gl_Position = gl_Vertex;
-Fcolor = gl_Color * .01;
+gl_Position =  gl_ModelViewProjectionMatrix  * gl_Vertex;
+Fcolor = gl_Color *.2;
 }
+ 

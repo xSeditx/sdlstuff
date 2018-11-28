@@ -65,7 +65,7 @@ typedef glm::vec4 RGBAf;
 class Callback;
 class Shader;
 
-
+void GetOpenGLState();
 
 
 #define TRUE   1
@@ -310,6 +310,8 @@ public:
 	int EventLoop();
 
 	void CLS();
+	void CLS(int r, int g, int b);
+
 	void Sync();
 
 	inline void  SetRefreshRate(float rate) { RefreshRate = rate; }

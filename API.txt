@@ -1,0 +1,85 @@
+
+
+
+Window API
+-------------
+
+Class
+-Window
+Usage:
+      Window(
+	         int x,                      x position of the window
+	         int y,                      y position of the window
+	         int width,                  width is the Width of the window
+		     int height,                 height is the Height of the window
+		     const char * title          title is the Name displayed on the Window
+		    );
+	                         
+	                          
+	                        
+	                          
+	                          
+
+STRUCTURES
+_____________
+-Mouse
+About: Structure that will contain all current information about the state of the Mouse at that moment and any messages it has recieved 
+
+	const Uint8 *KeyState;    Pointer to an array that contains the state of all the keys avalible called by their keycode. 
+
+-- STRUCTURE
+  __________
+----Key
+       int  Modifier;         Modifier of the current Keypress
+       int  Code;             Keycode of the current Keypress
+       int  ScanCode;         Scancode of the Current Keypress;
+       bool State;            State of the Current Keypress
+
+
+
+-Keyboard
+About: Structure containing the current state of the Keyboard
+
+
+-Framerate
+About: Structure containing framerate information and limiters. Possibly will be depreciated in the future and its implementation hidden from the end user.
+
+
+
+    MEMBERS
+_________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+CORE.cpp
+
+Scene
+=====
+-- Group
+--_______
+---- Mesh
+----______
+------ Material
+----_____________
+--------Shader
+--------Lighting
+--------Normals
+--------Texture
+------------ UVBuffer
+------------ Image
+------Polygon
+----_____________
+-------- Indices
+-------- Vertices
+-------- Normals
+-------- Colors
