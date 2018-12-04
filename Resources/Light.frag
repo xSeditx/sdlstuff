@@ -1,3 +1,9 @@
+// THIS SHADER IS CURRENTLY KIND OF IN THE WAY, WHAT I WANT IS TO BE ABLE, FOR DEBUG REASONS TO RENDER THE LOCATION IN 3D SPACE OF THE LIGHT WITH A NICE
+// FADE/BLEND LOOK COMING OUT FROM THE SOURCE OF THE LIGHT.
+// I NEED TO VISUALIZE THE LOCATION OF THE LIGHT AND FIGURED I MAY AS WELL MAKE IT LOOK GOOD WHILE I DO....
+
+
+
 #version 130
 #pragma debug(off)
 
@@ -39,21 +45,3 @@ void main()
     gl_FragColor =  vec4(result, 1.0);
 }
  
-
-
-
-
-
-
-
-
-
-// float3 LightDirection = LightPosition1 - EyePosition;
-// float Distance = length(lightdir);
-// LightDirection = LightDirection / Distance;
-// Distance = Disttance * Distance;
-// 
-// float NdotL = dot( normal, lightDir );
-// float Intensity = saturate( NdotL );
-// 
-// vec3 Diffuse =  Intensity * light.diffuseColor * light.diffusePower / distance

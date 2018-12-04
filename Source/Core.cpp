@@ -4,7 +4,8 @@
 Scene::Scene()
 {
 	Surface = NULL;
-	Groups.push_back(Group());
+	//Groups.push_back(Group());
+	AddGroup(Group());
 }
 Scene::Scene(Material *renderer)
 {
@@ -21,19 +22,21 @@ void Scene::Update()
 }
 void Scene::Render()
 {
+ 
+	Lights[0].Bind();
+//	Lights[0].Render();
+
 	if (Surface != NULL)
 	{
 		Surface->Bind();
 	}
-	{
+	{			
+		Camera.Update();
+
 		for (auto& G : Groups)
 		{
 			G.Render();
 		}
-	}
-	if (Surface != NULL)
-	{
-		//	Surface->Unbind();
 	}
 }
 void Scene::AddGroup(const Group& group)
@@ -66,6 +69,13 @@ void Group::Add(Mesh object)
 	Objects.push_back(object);
 	ObjectCount++;
 }
+void Group::Add(Mesh object, Material *surface)
+{
+	object.Add(surface);
+	Objects.push_back(object);
+	ObjectCount++;
+}
+
 void Group::Attach(Material *surface)
 {
 	Surface = surface;
@@ -129,3 +139,15 @@ void Group::Render()
 //virtual void Render() = 0;
 //};
 //
+//	for (auto&L : Lights)
+//	{
+//glUseProgram(0);
+//glPointSize(6);
+//glBegin(GL_TRIANGLES);
+//glColor3f(1, 1, 1);//GL_Color(Lights[0].AmbientColor.r), GL_Color(Lights[0].AmbientColor.g), GL_Color(Lights[0].AmbientColor.b));
+//glVertex3f(0, 0, 10);
+//glVertex3f(0 + 10, 0, 0 + 10);
+//glVertex3f(0, 0 + 10, 0);
+//glEnd();
+//glUseProgram(Shader::GetActiveShader()->GetName());
+//	}

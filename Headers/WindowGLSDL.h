@@ -1,10 +1,10 @@
-
-
 #define _USE_SDL_WINDOW
 
 #pragma once
+
+
 #define SDL_MAIN_HANDLED
-#define _SDL_
+//#define _SDL_
 
 #define FEATURES_JOYSTICK          OFF
 #define FEATURES_GAMECONTROLLER    OFF
@@ -66,7 +66,7 @@ class Callback;
 class Shader;
 
 void GetOpenGLState();
-
+void GetOpenGLInfo();
 
 #define TRUE   1
 #define FALSE  0
@@ -74,6 +74,8 @@ void GetOpenGLState();
 #define OFF    0
 
 #define RADIANS(angle)           ((angle) * .0174532925199444)
+#define DEGREES(angle)           ((angle) * (180.0f / M_PI) )    
+
 #define GL_Color(c)              (c * (.0039215686627451))
 #define Print(x)                 std::cout << x << std::endl
 #define for_loop(iter, count)    for(int iter = 0;iter < (count); iter++)
@@ -83,6 +85,8 @@ void GetOpenGLState();
                                         (x);\
                                   _TRACE(x);\
                    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+ 
+
 
 #else
 #    define f_Trace(x)
@@ -629,3 +633,7 @@ private:
 
 
  
+
+std::ostream& operator<<(std::ostream &lhv, Vec2 const &rhv);
+std::ostream& operator<<(std::ostream &lhv, Vec3 const &rhv);
+std::ostream& operator<<(std::ostream &lhv, Vec4 const &rhv);

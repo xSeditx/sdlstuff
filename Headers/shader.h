@@ -37,7 +37,7 @@ private:
 	const char* m_Fragpath;
 	GLuint ID;
 public:
-
+	Shader(const Shader &other) { Print("Copy constructor, Shader");*this = other; }
 	Shader::Shader(const char* vertpath, const char* fragpath);
 	Shader::Shader();
 	Shader::~Shader();
@@ -54,12 +54,13 @@ public:
 	void Shader::SetUniformMat4(GLchar *name, Matrix &matrix);
 	void Shader::SetTexture(GLchar *name, int slot);
 	void Shader::AttachUniform(GLchar *name, Uniformtype type, void *variable);
-	void Shader::SetCacheUniforms(Matrix mvp);
+	void Shader::SetCacheUniforms(Matrix mv, Matrix p);
 
 	GLint Shader::GetUniformLocation(GLchar *name);
 	GLuint Shader::GetName();
 
-	int MVPLocation = 0;
+	int ProjectionMatrixLOC = 0;
+	int ModelViewMatrixLOC = 0;
 
 	static Shader* GetActiveShader();
 	static std::vector<Shader *> Shader::ActiveShader;

@@ -10,23 +10,28 @@ public:
 	~Block() {}
 	Block() {}
 	Block(Vec3 pos, float size);
-
+	Block(Vec3 pos, float size, Material *surface);
+	Material *Surface;
 	int ID;
-
 	GLuint VertexCount;
-
-	std::vector<Vec3>    VertexList;
-	std::vector<Vec3>    NormalList;
-	std::vector<Vec2>    TextureCoords;
-	std::vector<Vec4>    ColorList;
-	std::vector<GLuint>  IndexList;
-
-//	IndexBuffer    *Indices;
-//	VertexBuffer   *Vertices;
-//	NormalBuffer   *Normals;
-//	ColorBuffer    *Colors;
-
 };
+
+
+class Cube :public Mesh
+{
+public:
+
+	~Cube() {}
+	Cube() {}
+	Cube(Vec3 pos, float size);
+	Cube(Vec3 pos, float size, Material *surface);
+	Material *Surface;
+	int ID;
+	GLuint VertexCount;
+};
+
+
+
 class Sphere : public Mesh
 {
 public:
@@ -39,23 +44,50 @@ public:  // OpenGL Stuff
 
 	Sphere() {}
 	Sphere(Vec3 pos, float radius, int sectors);
+	Sphere(Vec3 pos, float radius, int sectors, Material *surface);
 
-	Vec3  Vertices[648];
-	Vec3  Normals[648];
-	Vec2  UVcoord[684];
-	RGBf  Colors[648];
-	GLuint Indices[972];
+	//Vec3  Vertices[648];
+	//Vec3  Normals[648];
+	//Vec2  UVcoord[684];
+	//RGBf  Colors[648];
+	//GLuint Indices[972];
 
 	GLuint VertexCount;
 	GLuint ColorCount;
 
-	void Set_Position(float x, float y, float z) { Position = Vec3(x, y, z); }
-	void Set_Position(Vec3 pos) { Position = pos; }
-	void Set_Rotation(float x, float y, float z) { Rotation = Vec3(x, y, z); }
+	// void Set_Position(float x, float y, float z) { Position = Vec3(x, y, z); }
+	// void Set_Position(Vec3 pos) { Position = pos; }
+	// void Set_Rotation(float x, float y, float z) { Rotation = Vec3(x, y, z); }
 	void Rotate(float x, float y, float z);
-	void SetRotation(Vec3 rot) { Rotation = rot; }
 
-	Vec3 Get_Position() { return Position; }
-	Vec3 Get_Rotation() { return Rotation; }
+};
+class Plane : public Mesh
+{
+public:
+	~Plane() {}
+	Plane(){}
+	Plane(Vec3 pos, Vec3 rotation, float width, float height);
+	Plane(Vec3 pos, Vec3 rotation, float width, float height, Material *surface);
+
+	Vec2 Size;
+
 };
 
+
+
+
+class Torus : public Mesh
+{
+public:
+	Torus(Vec3 position, int numc, int numt,  float scale);
+	Torus(Vec3 position, int numc, int numt );
+
+	// Buffer *VBO;
+
+	void Set_Position(float x, float y, float z);
+	void Set_Rotation(float x, float y, float z);
+
+	void Rotate(float x, float y, float z);
+	void Render();
+	void RenderVBO();
+};

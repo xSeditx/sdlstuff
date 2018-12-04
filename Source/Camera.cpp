@@ -104,30 +104,26 @@ Viewport::Viewport(Vec3 position, Vec3 rotation)
 	ViewMatrix = Matrix(1.0f);
 	Camera = this;
 }
-
 void Viewport::Update()
 {
+	glm::mat4 Pitch = glm::rotate(Identity, Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 Yaw   = glm::rotate(Identity, Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+//	glm::mat4 Roll  = glm::rotate(Identity, Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+//	ViewMatrix = (Roll * Pitch *  Yaw) * (glm::translate(glm::mat4(1.0f), -Position));
 
-	glm::mat4 Pitch = glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::mat4 Yaw = glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Roll = glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
-	ViewMatrix = (Roll * Pitch *  Yaw) * (glm::translate(glm::mat4(1.0f), -Position));
+	ClampCamera();
+	ViewMatrix = RotateX(Rotation.x) * RotateY(Rotation.y) * (glm::translate(glm::mat4(1.0f), -Position)); //  (Pitch *  Yaw) *
 
 	Forward = glm::normalize(Vec3(ViewMatrix[0][2], ViewMatrix[1][2], ViewMatrix[2][2]));
-	Right = glm::normalize(Vec3(ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]));
+	Right   = glm::normalize(Vec3(ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]));
+
 }
 Matrix Viewport::GetViewMatrix()
 {
 	ViewMatrix = glm::lookAt(Position, Position + Forward, Up);
-	return ProjectionMatrix * ViewMatrix;
+	return ViewMatrix; 
 }
 
-void Viewport::Rotate(float pitch, float yaw)
-{
-	Rotation.x -= yaw * .005;
-	Rotation.y -= pitch * .008;
-}
 void Viewport::MoveForward(float speed)
 {
 	Position -= (speed * Forward);
@@ -145,11 +141,57 @@ void Viewport::MoveRight(float speed)
 	Position += (speed)* Right;
 }
 
+Matrix Viewport::RotateX(GLfloat angle)
+{
+	Matrix ret = {
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, cos(angle), -sin(angle), 0.0f,
+		0.0f, sin(angle),  cos(angle), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+	return ret;
+}
+Matrix Viewport::RotateY(GLfloat angle)
+{
+	Matrix ret = {
+		cos(angle), 0.0f,-sin(angle), 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		sin(angle), 0.0f, cos(angle), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+	return ret;
+}
+Matrix Viewport::RotateZ(GLfloat Angle)
+{
+	Matrix ret = {
+		0, 0.0f,0, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0, 0.0f,0, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+	return ret;
+}
+void Viewport::Rotate(float pitch, float yaw)
+{
+	Rotation.x -= yaw * RADIANS(.5);//.005;
+	Rotation.y -= pitch * RADIANS(.5); //.008;
+}
 void Viewport::ClampCamera()
 {
-	if (Rotation.x > 90)  Rotation.x = 90;
-	if (Rotation.x < -90) Rotation.x = -90;
-	if (Rotation.y < .0)    Rotation.y += 360.0f;
-	if (Rotation.y> 360.0f)  Rotation.y -= 360.0f;
+	if (Rotation.x > RADIANS(89))  Rotation.x = RADIANS(89);
+	if (Rotation.x < -RADIANS(89)) Rotation.x = -RADIANS(89);
 }
+
+
 #endif
+
+
+
+
+
+
+
+
+//Right = glm::normalize(glm::cross(cameraFront, cameraUp));
+//if (Rotation.y < .0)    Rotation.y += 360.0f;
+//if (Rotation.y> 360.0f)  Rotation.y -= 360.0f;

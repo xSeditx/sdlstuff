@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{25ae4911-2dcd-4228-9545-a7d58a5be274}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Window\GUI">
+      <UniqueIdentifier>{b7da26a5-95bf-4d6d-8aad-804fdb4f3f01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -67,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="Source\Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GUI.cpp">
+      <Filter>Source Files\Window\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +121,9 @@
     <ClInclude Include="Headers\Mesh.h">
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GUI.h">
+      <Filter>Source Files\Window\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\basic.frag">
@@ -129,6 +138,12 @@
     <None Include="Resources\ff.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Light.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Light.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\OldShaders.txt">
@@ -137,7 +152,10 @@
     <Text Include="Resources\Removed.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="API.txt">
+    <Text Include="Resources\API.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Resources\Future.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -23,6 +23,9 @@ void Material::Bind()
 		glActiveTexture(GL_TEXTURE0);
 		Skin->Texture.Bind();
 		Shader::GetActiveShader()->SetTexture("DiffuseTexture", 0);
+		glActiveTexture(GL_TEXTURE1);
+		Skin->NormalsTexture.Bind();
+		Shader::GetActiveShader()->SetTexture("NormalsTexture", 1);
 
 
 //	glActiveTexture(GL_TEXTURE1);
@@ -91,5 +94,25 @@ Material* BrickMaterial()
 	ret->SetRenderer(Shader::GetActiveShader());
 	ret->Attach(SKIN_DIFFUSE, Image::Manager.GetAsset("BrickDiffuse"));
 	ret->Attach(SKIN_NORMALS, Image::Manager.GetAsset("BrickNormals"));
+	return ret;
+}
+
+Material* StoneMaterial()
+{
+	Material *ret = new Material();
+	ret->SetRenderer(Shader::GetActiveShader());
+	ret->Attach(SKIN_DIFFUSE, Image::Manager.GetAsset("StoneDiffuse"));
+	ret->Attach(SKIN_NORMALS, Image::Manager.GetAsset("StoneNormals"));
+	return ret;
+}
+
+
+
+Material* MoonMaterial()
+{
+	Material *ret = new Material();
+	ret->SetRenderer(Shader::GetActiveShader());
+	ret->Attach(SKIN_DIFFUSE, Image::Manager.GetAsset("Moon"));
+	//ret->Attach(SKIN_NORMALS, Image::Manager.GetAsset("Moon"));
 	return ret;
 }

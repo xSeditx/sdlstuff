@@ -1,0 +1,19 @@
+
+
+
+
+
+>Entity                                                   
+>> Transform              x            
+>>> Position              x            
+>>> Rotation              x                                     
+>>> Scale                 x         
+>> Collider                          
+>>> Physics Material                          
+>> Mesh Renderer                                 
+>>> Lighting              o                   
+>>> Material              x          
+>>> Occluder                          
+>> Script    
+>> UpdateSpeed                      
+>>> Behavior                          

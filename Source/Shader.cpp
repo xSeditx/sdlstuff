@@ -22,7 +22,8 @@ Shader::Shader(const char* vertpath, const char* fragpath)
 	_GL(glUseProgram(ID));
 #ifdef _OPENGL_FIXED_FUNCTION	 
 #else
- 	MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
+	ProjectionMatrixLOC = GetUniformLocation("ProjectionMatrix");
+	ModelViewMatrixLOC = GetUniformLocation("ModelViewMatrix");
 #endif
 }
 Shader::Shader()
@@ -45,7 +46,7 @@ void Shader::Enable()
 	{
 		glUseProgram(ID);
 		ActiveShader.push_back(this);
-		MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
+	//	MVPLocation = GetUniformLocation("ModelViewProjectionMatrix");
 		for (auto &Uni : Uniforms)
 		{
 			switch (Uni.Type)
@@ -111,9 +112,10 @@ void Shader::AttachUniform(GLchar *name, Uniformtype type, void *variable)
 {
 	Uniforms.push_back(Uniform(type, name, variable));
 }
-void Shader::SetCacheUniforms(Matrix mvp)
+void Shader::SetCacheUniforms(Matrix mv, Matrix p)
 {
-	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+	glUniformMatrix4fv(ModelViewMatrixLOC, 1, GL_FALSE, glm::value_ptr(mv));
+ 	glUniformMatrix4fv(ProjectionMatrixLOC, 1, GL_FALSE, glm::value_ptr(p));
 }
 
 GLint Shader::GetUniformLocation(GLchar *name)
@@ -173,17 +175,8 @@ GLuint Shader::Load()
 	glAttachShader(program, fragment);
 	glBindAttribLocation(program, 10, "VertexPosition");
 	glBindAttribLocation(program, 12, "VertexColor");
-#if	_OPENGL_FIXED_FUNCTION
-#else
-	//		VertexLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");
-	//		NormalsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal");
-	// 		ColorsLocation = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");
 
-	//	 glBindAttribLocation(vertex, 1, "VertexPosition"); // The index passed into glBindAttribLocation is
-	//	 glBindAttribLocation(vertex, 2, "VertexNormals");
-	//glBindAttribLocation(program, 3, "TextureCoords"); // used by glEnableVertexAttribArray. "position"   
-	//	 _GL(glBindAttribLocation(vertex, 3, "VertexColor"));
-#endif
+
 
 	glLinkProgram(program);
 	_GL(glGetProgramiv(program, GL_LINK_STATUS, &result));

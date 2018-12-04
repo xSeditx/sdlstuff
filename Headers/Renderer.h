@@ -1,4 +1,7 @@
 ﻿#pragma once
+//#define _OPENGL_FIXED_FUNCTION  
+
+
 
 #include<vector>
 
@@ -9,7 +12,6 @@
 #include"Buffers.h" // remove this later down the line.
 #include"FrameBuffer.h"
 
-//#define _OPENGL_FIXED_FUNCTION  
 
 
 //=========================================== DEBUG SWITCHES ==========================================================
@@ -30,6 +32,9 @@ _GL(glTranslatef(Position.x, Position.y, Position.z));\
 glRotatef(Rotation.x, 1.0, 0.0, 0.0);\
 glRotatef(Rotation.y, 0.0, 1.0, 0.0);\
 glRotatef(Rotation.z, 0.0, 0.0, 1.0);
+
+
+
 /*
 
 static class DrawCall

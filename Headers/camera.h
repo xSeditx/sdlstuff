@@ -2,7 +2,7 @@
 #include"WindowGLSDL.h"
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
-#include"renderer.h"
+
 
 ///        CAMERA 
 /*===============================================================================================================================================================
@@ -14,7 +14,8 @@
 =================================================================================================================================================================
 */
 
-#ifdef _OPENGL_FIXED_FUNCTION
+
+#if _OPENGL_FIXED_FUNCTION
 class Viewport
 {
 public:
@@ -92,10 +93,7 @@ public:
 
 	Matrix   ProjectionMatrix;
 	Matrix   ViewMatrix;
-
-
-	Vec2 Orientation;
-
+ 
 	float Speed;
 
 	//=======================================================================================================================================================
@@ -112,7 +110,7 @@ public:
 	void MoveLeft(float speed);
 	void MoveRight(float speed);
 	//=======================================================================================================================================================
-
+ 
 	void ClampCamera();
 
 	Matrix RotateX(GLfloat Angle);
@@ -120,13 +118,15 @@ public:
 	Matrix RotateZ(GLfloat Angle);
 
 	static Viewport *Camera;
-private:
+
 	Vec3
 		Position,
 		Rotation,
 		Forward,
 		Right,
 		Up;
+private:
+	Matrix Identity = Matrix(1.0f);
 };
 #endif
 

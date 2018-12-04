@@ -1,5 +1,5 @@
  //#define _GLFWWINDOW
-#define _SDLWINDOW
+//#define _SDLWINDOW
  
 #include"Window.h"
  
@@ -20,7 +20,7 @@
 //	const void* userParam);
 //
  
- 
+ // https://stackoverflow.com/questions/28287162/why-is-a-simple-shader-slower-than-the-standard-pipeline
 
 void Update()
 {
@@ -34,23 +34,21 @@ class MyApp : public Application
 };
 
 
-
-
 void Keydown(Uint16 Keycode, Uint16 ScanCode, Uint16 Modifier, Uint8 rep)
 {
 	switch (Keycode)
 	{
 	case 79:
-		Window::SCREEN->World->Camera.MoveRight(.251);
+		Window::SCREEN->World->Camera.MoveRight(.51);
 		break;
 	case 80:
-		Window::SCREEN->World->Camera.MoveLeft(.251);
+		Window::SCREEN->World->Camera.MoveLeft(.51);
 		break;
 	case 81:
-		Window::SCREEN->World->Camera.MoveForward(.251);
+		Window::SCREEN->World->Camera.MoveForward(.51);
 		break;
 	case 82:
-		Window::SCREEN->World->Camera.MoveBack(.251);
+		Window::SCREEN->World->Camera.MoveBack(.51);
 		break;
 	}
 }
@@ -65,7 +63,9 @@ void LoadStuff()
 {
 	Image::Manager.Add(new Image("Moon", "Resources//Moon.bmp"));
 	Image::Manager.Add(new Image("BrickDiffuse", "Resources\\Brick\\Brick.bmp"));
-    Image::Manager.Add(new Image("BrickNormals", "Resources\\Brick\\Brickn.bmp"));
+	Image::Manager.Add(new Image("BrickNormals", "Resources\\Brick\\Brickn.bmp"));
+	Image::Manager.Add(new Image("StoneDiffuse", "Resources\\Stone\\Stone.bmp"));
+	Image::Manager.Add(new Image("StoneNormals", "Resources\\Stone\\Stonen.bmp"));
 
 }
 
@@ -78,107 +78,86 @@ void main()
 	MainWin.SetUpdate(Update);
 	MainWin.SetRender(Render);
 	MainWin.Framerate.Set(2500);
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	//--------Gathering information about OpenGL state and Display it -----------------------------------------------
-	int NumberOfExtensions = 0;
-	glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions);
-	for_loop(Count, NumberOfExtensions)
-	{
-		Print(glGetStringi(GL_EXTENSIONS, Count));
-	}
-//const GLubyte *extensions = glGetString(GL_EXTENSIONS);
-//Print(extensions);
-Print("OpenGL Version: "; Print(glGetString(GL_VERSION)));
-Print("Renderer: "; Print(glGetString(GL_RENDERER)));
-Print("Vendor: "; Print(glGetString(GL_VENDOR)));
-Print("Current Context: "; Print(wglGetCurrentContext()));
-
-	//-------------------------------------------------------------------------------------------------------------
-
-
- LoadStuff();
-//	 void DebugMessageCallbackARB(DEBUGPROCARB callback,
-//		 const void* userParam);
+    LoadStuff();
 	  
 #ifdef	_OPENGL_FIXED_FUNCTION
 	Material *Surface = new Material();
 	//Surface->SetRenderer(new Shader("Resources\\FF.vert", "Resources\\FF.frag")); // Shader("Resources\\Basic.vert", "Resources\\Basic.frag");
  #else
-     GLuint vao;
-     glGenVertexArrays(1, &vao);
-     glBindVertexArray(vao);
+
 
      Material *Surface = new Material();
      Surface->SetRenderer(new Shader("Resources\\Basic.vert", "Resources\\Basic.frag"));  
 	 //Surface->Attach(SKIN_DIFFUSE, Image::Manager.GetAsset("Moon"));
  #endif
 
-	Block Cube(Vec3(0, 0, 10), 1);
-	Block Cube1(Vec3(0, 0, -10), 1);
-	Block Cube2(Vec3(0, 10, 0), 1);
-	Block Cube3(Vec3(0, -10, 0), 1);
-	Block Cube4(Vec3( 10, 0, 0), 1);
-	Block Cube5(Vec3(-10, 0, 0), 1);
-	Block center(Vec3(0, 0, 0), 2);
-
-	 
-	Sphere Ball(Vec3(-5, -5, 0), 1, 15);
+///  Mesh bot = Mesh();
+///  bot.LoadOBJ("Resources\\Robot.obj");
+///  bot.Surface = new Material(*MoonMaterial());
+///  MainWin.World->Groups[0].Add(bot);
 
 	MainWin.World = new Scene();
-	MainWin.World->Camera = Viewport(Vec3(0, 0, 0), Vec3(0, 0, 0));
+	MainWin.World->Attach( Viewport( Vec3( 0, 0, 0 ), Vec3( 0, 0, 0 ) ) );
+	MainWin.World->AddLight( Light( Vec3( 100,10,100 ) ) );
+
 	Viewport::Camera = &MainWin.World->Camera;
-   MainWin.World->Groups[0].Add(Cube);
-   MainWin.World->Groups[0].Add(Cube1);
-   MainWin.World->Groups[0].Add(Cube2);
-   MainWin.World->Groups[0].Add(Cube3);
-   MainWin.World->Groups[0].Add(Cube4);
-   MainWin.World->Groups[0].Add(Cube5);
-   MainWin.World->Groups[0].Add(center);
-	 
-	for_loop(Index, 400)
-	{
-		//Sphere Ball(Vec3(rand() % 300 - 150, rand() % 300 - 150, rand() % 300 - 150), 1, 20);
-		Block Block (Vec3(rand() % 300 - 150, rand() % 300 - 150, rand() % 300 - 150), 2);
-		Block.Surface = BrickMaterial();
-		 
-		MainWin.World->Groups[0].Add(Block);
-	}
- 	glEnableClientState(GL_INDEX_ARRAY);
-//	MainWin.World->Surface = Surface;
-   	glDisable(GL_LIGHTING);
-   	glDisable(GL_TEXTURE_2D);
-   	glDisable(GL_ALPHA_TEST);
-   	glDisable(GL_AUTO_NORMAL);
-   	glDisable(GL_BLEND);
-   	glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_MINMAX);
-    glDisable(GL_MULTISAMPLE);
-    glDisable(GL_NORMALIZE);
-    glDisable(GL_POLYGON_SMOOTH);
-   	//glDisable();
-   	//glDisable();
-//	glDrawElementsInstanced(GL_TRIANGLES, 24, GL_FLOAT, MainWin.World->Groups[0].Objects[0].Polygons->Indices, 1);
-	GetOpenGLState();
+
+    MainWin.World->Groups[0].Add( Block( Vec3(   0,   0,  10),  1  ) );
+    MainWin.World->Groups[0].Add( Block( Vec3(   0,   0, -10),  1  ) );
+    MainWin.World->Groups[0].Add( Block( Vec3(   0,  10,   0),  1  ) );
+    MainWin.World->Groups[0].Add( Block( Vec3(   0, -10,   0),  1  ) );
+    MainWin.World->Groups[0].Add( Block( Vec3(  10,   0,   0),  1  ) );
+    MainWin.World->Groups[0].Add( Block( Vec3( -10,   0,   0),  1  ) );
+
+	Sphere center(Vec3(0, 0, 0), 1, 25);
+	center.Surface = new Material(*MoonMaterial());
+    MainWin.World->Groups[0].Add(center);
+
+   int dist = 100;
+   for_loop(Index, 200)
+   {
+	   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
+	   MainWin.World->Groups[0].Add(Block(pos, 2), BrickMaterial()); //; Sphere(pos, 1, 30)
+   }
+   for_loop(Index, 200)
+   {
+	   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
+	   MainWin.World->Groups[0].Add(Block(pos, 2), StoneMaterial());
+   }
+
+	float
+		Xangle = 0,
+		Yangle = 0;
+	int Var = 10;
+	int *pointer = &Var;
 	while (MainWin.EventLoop())
 	{
 		{
-			//Performance.Start();
 			BenchMark Performance;
-			//Performance.Start();
-			MainWin.CLS();
-		//	Surface->GetRenderer()->Enable();
-			MainWin.World->Camera.Update();
+			MainWin.CLS(0,0,0);
 			MainWin.World->Render();
-		//	Surface->GetRenderer()->Disable();
+			MainWin.World->Lights[0].SetPosition
+			(
+				Vec3
+				(
+					cos(RADIANS(Xangle)) * 10,
+					sin(RADIANS(Xangle)) * 10,
+					sin(RADIANS(Yangle)) * 10
+				)
+			);
+	     // 	MainWin.World->Groups[0].Objects[0].Position = MainWin.World->Lights[0].Position;
 			MainWin.Sync();
-		//	glCheckError();
-		//	Performance.End();
+			Xangle+= .5;
+			Yangle+= .5;
 		}
+ 
 
-		
-//		Print(MainWin.Mouse.Position.x << " : " << MainWin.Mouse.Position.y);
-//		Print(MainWin.Mouse.Velocity.x << " : " << MainWin.Mouse.Velocity.y);
-// 		Print(MainWin.Framerate.Get());
+	//	Print(DEGREES(MainWin.World->Camera.Rotation.x));
+	//	Print(DEGREES(MainWin.World->Camera.Rotation.y));
 	}
 	glBindVertexArray(0);
 }
@@ -188,7 +167,25 @@ Print("Current Context: "; Print(wglGetCurrentContext()));
 
 
 
- 
+
+
+
+
+
+
+
+
+
+//	 void DebugMessageCallbackARB(DEBUGPROCARB callback,
+//		 const void* userParam);
+//	glDrawElementsInstanced(GL_TRIANGLES, 24, GL_FLOAT, MainWin.World->Groups[0].Objects[0].Polygons->Indices, 1);
+//MainWin.Framerate.Set(60);
+//Performance.Start();
+//	glCheckError();
+//	Performance.End();
+//		Print(MainWin.Mouse.Position.x << " : " << MainWin.Mouse.Position.y);
+//		Print(MainWin.Mouse.Velocity.x << " : " << MainWin.Mouse.Velocity.y);
+// 		
 //  HWND ConsoleHandle = GetConsoleWindow();
 //  LPMSG Msg = 0;
 //  if (GetMessage(Msg, ConsoleHandle, 0, 0) != 0)

@@ -120,3 +120,39 @@ void main()
     gl_FragColor = v_Color * diffuse;
 }
 */
+
+
+
+
+
+
+
+
+
+ // RANDOM GARBAGE
+ ===========================================================================
+
+ 
+///* first transform the normal into eye space and
+//   normalize the result */
+//   normal = normalize(gl_NormalMatrix * gl_Normal);
+///* pass the halfVector to the fragment shader */
+//    halfVector = gl_LightSource[0].halfVector.xyz;
+/* Compute the diffuse, ambient and globalAmbient terms */
+//    diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
+//    ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
+//    ambient += gl_LightModel.ambient * gl_FrontMaterial.ambient;
+//    gl_Position = ftransform();
+
+//  out vec3 Normal;
+//    
+//  void main()
+//  {
+//      gl_Position = projection * view * model * vec4(aPos, 1.0);
+//      FragPos = vec3(model * vec4(aPos, 1.0));
+//      Normal = aNormal;
+//	Normal = normalize(vec3(gl_ModelViewMatrix * vec4(VertexNormal,0.0)));
+
+   // Normal = mat3(transpose(inverse(ModelMatrix))) * VertexNormal.xyz; 
+
+//	;

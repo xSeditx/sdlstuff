@@ -56,3 +56,5 @@ private:
 
 
 Material* BrickMaterial();
+Material* StoneMaterial();
+Material* MoonMaterial();

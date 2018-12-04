@@ -26,30 +26,13 @@ struct Vertex
 =================================================================================================================================================================
 */
 
-class VAO
-{
-public:
-	VAO();
-	~VAO();
-
-	GLuint ID;
-
-	void EnableAttribute(GLuint index);
-	void DisableAttribute(GLuint index);
-	void Bind();
-	void Unbind();
-	int MaxAttributes();
-private:
-	GLint MaxAttrib;
-};
-
-
 //_______________________________________________________________________________________________________________________________________________________________
 class VertexBuffer
 {
 public:
 	VertexBuffer() {}
 	~VertexBuffer();
+	
 	VertexBuffer(Vec3 *Vertexdata, GLsizei count);
 	VertexBuffer(Vec4 *vertexdata, GLsizei vcount);
 
@@ -147,15 +130,11 @@ public:
 	VAOBuffer();
 	~VAOBuffer() {}
 
-	VertexBuffer *Vertices;
-	IndexBuffer  *Indices;
-	NormalBuffer *Normals;
-	UVBuffer     *Textures;
-	ColorBuffer  *Colors;
 
 	GLuint BatchID = 0;
 	GLuint VAO;
 	bool Woven;
+
 	int NormalsOffset;
 	int UVOffset;
 	int ColorsOffset;
@@ -176,6 +155,16 @@ public:
 		Vec4 Normals;
 	};
 	void Interleave();
+
+	GLuint ElementCount() { return Indices->ElementCount; }
+
+private:
+
+	VertexBuffer *Vertices;
+	IndexBuffer  *Indices;
+	NormalBuffer *Normals;
+	UVBuffer     *Textures;
+	ColorBuffer  *Colors;
 };
 
 

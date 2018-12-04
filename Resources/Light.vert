@@ -1,3 +1,8 @@
+// THIS SHADER IS CURRENTLY KIND OF IN THE WAY, WHAT I WANT IS TO BE ABLE, FOR DEBUG REASONS TO RENDER THE LOCATION IN 3D SPACE OF THE LIGHT WITH A NICE
+// FADE/BLEND LOOK COMING OUT FROM THE SOURCE OF THE LIGHT.
+// I NEED TO VISUALIZE THE LOCATION OF THE LIGHT AND FIGURED I MAY AS WELL MAKE IT LOOK GOOD WHILE I DO....
+
+
 #version 130
 #pragma debug(off)
 precision lowp vec4;
@@ -9,8 +14,9 @@ uniform mat4 CameraPos;
 //-------------------------------------------------------------------------
 //         VERTEX ATTRIBUTES IN
 attribute vec4 VertexPosition;
+attribute vec4 VertexNormal;
 attribute vec4 VertexColor;
-attribute vec4 VertexNormal;              
+
 
 //-------------------------------------------------------------------------
 //           LIGHTING IN
@@ -34,14 +40,11 @@ out vec3 Ambient;
 out vec3 LPos;
 //-------------------------------------------------------------------------
  
-
-
-
 void main()
 {
 
 //  vec3 EyePosition = vec3(ModelViewMatrix[12], ModelViewMatrix[13], ModelViewMatrix[14])
-    Fcolor = VertexColor;
+//  Fcolor = VertexColor;
 	FNormal   =  VertexNormal.xyz;      // vec3(CameraPos * vec4(VertexNormal.xyz,  1.0));   // 
 	Fposition =   vec3(normalize(CameraPos * vec4(VertexPosition.xyz, 1.0)));	//VertexPosition.xyz;    // 
 

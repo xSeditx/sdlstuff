@@ -1,6 +1,7 @@
 #include"Light.h"
 #include"Shader.h"
 
+#include"Primative.h"
 Light::Light() {}
 Light::Light(Vec3 pos)
 {
@@ -12,6 +13,8 @@ Light::Light(Vec3 pos, Vec3 ambient, Vec3 diffuse, Vec3 specular)
 	Vec3 AmbientColor = ambient;
 	Vec3 DiffuseColor = diffuse;
 	Vec3 SpecularColor = specular;
+
+	//Visual = new Cube(pos, 2);
 }
 
 void Light::SetRotation(Vec3 rot)
@@ -51,7 +54,22 @@ void Light::Bind()
 	Shader::GetActiveShader()->SetUniform3f("AmbientLight", AmbientColor);
 	Shader::GetActiveShader()->SetUniform3f("DiffuseLight", DiffuseColor);
 	Shader::GetActiveShader()->SetUniform3f("SpecularLight", SpecularColor);
+	
+	Shader::GetActiveShader()->SetUniform3f("LightPosition1", Position);
+	
 }
 void Light::Unbind()
 {
+}
+
+
+
+void Light::Render()
+{
+//glPointSize(6);
+//glBegin(GL_POINTS);
+//glColor3f(GL_Color(AmbientColor.r), GL_Color(AmbientColor.g), GL_Color(AmbientColor.b));
+//glVertex3f(Position.x, Position.y, Position.z);
+//glEnd();
+	Visual->Render();
 }

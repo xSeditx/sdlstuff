@@ -1,6 +1,10 @@
+#include"Window.h"
 
-#include"WindowGLSDL.h"
 #ifdef _USE_SDL_WINDOW
+
+#pragma message( "Compiling for Using SDL based Window System" )
+
+
 int BenchMark::ObjectCounter = 0 ;
 long long BenchMark::AverageTimer = 0 ;
 long long BenchMark::AverageResult = 0;
@@ -78,8 +82,7 @@ Window::Window(int x, int y, int width, int height, const char * title)
 	OpenGLContext = SDL_GL_CreateContext(SDL_HWND);
 	SDL_GL_MakeCurrent(SDL_HWND, OpenGLContext);
 
-	GetOpenGLState();
-	GetOpenGLState();
+
 	if (SDL_HWND == NULL)
 	{
 		Print("Can Not Create Window");
@@ -119,22 +122,24 @@ Window::Window(int x, int y, int width, int height, const char * title)
 	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
  // glShadeModel(GL_FLAT);
- glFrontFace(GL_CCW);
-
-glEnable(GL_CULL_FACE);
-glCullFace(GL_BACK);
-
- glClearColor(0, 0, 0, 0);
- glViewport(0, 0, width, height);
- glMatrixMode(GL_PROJECTION);
- glLoadIdentity();
- gluPerspective(60.0, AspectRatio, 1.0f, 1024.0);
+    glFrontFace(GL_CCW);
+    
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
+    glClearColor(0, 0, 0, 0);
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60.0, AspectRatio, 1.0f, 1024.0);
 
 	Alive = TRUE;
 	Active = TRUE;
 
 	MouseCorrection = Vec2(1.0f);
 	SetActiveWindow(this);
+	GetOpenGLState();
+
 }
 
 int Window::EventLoop()
@@ -687,5 +692,47 @@ void GetOpenGLState()
 		Print("SDL_GL_CONTEXT_EGL Error");
 	} else { Print("SDL_GL_CONTEXT_EGL :" << Results);
 	}
+
+	//--------Gathering information about OpenGL state and Display it -----------------------------------------------
+	int NumberOfExtensions = 0;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions);
+	for_loop(Count, NumberOfExtensions)
+	{
+		Print(glGetStringi(GL_EXTENSIONS, Count));
+	}
+	//const GLubyte *extensions = glGetString(GL_EXTENSIONS);
+	//Print(extensions);
+	Print("OpenGL Version: "; Print(glGetString(GL_VERSION)));
+	Print("Renderer: "; Print(glGetString(GL_RENDERER)));
+	Print("Vendor: "; Print(glGetString(GL_VENDOR)));
+	Print("Current Context: "; Print(wglGetCurrentContext()));
+
+	//-------------------------------------------------------------------------------------------------------------
+
 }
+
+
+
+
+
+
+
+std::ostream& operator<<(std::ostream &lhv, Vec2 const &rhv)
+{
+	lhv << "X: " << rhv.x << " | " << "Y: " << rhv.y;
+	return lhv;
+}
+std::ostream& operator<<(std::ostream &lhv, Vec3 const &rhv)
+{
+	lhv << "X: " << rhv.x << " | " << "Y: " << rhv.y << " | " << "Z: " << rhv.z;
+	return lhv;
+}
+std::ostream& operator<<(std::ostream &lhv, Vec4 const &rhv)
+{
+	lhv << "X: " << rhv.x << " | " << "Y: " << rhv.y << " | " << "Z: " << rhv.z << " | " << "W: " << rhv.a;
+	return lhv;
+}
+
+
+
 #endif

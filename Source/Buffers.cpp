@@ -1,45 +1,16 @@
 #include"Buffers.h"
 #include"Shader.h"
 
-VAO::VAO()
-{
-	glGenVertexArrays(1, &ID);
-}
-VAO::~VAO()
-{
-	//glDeleteVertexArrays(ID);
-	//	Print("Delete VAO");
-}
-void VAO::Bind()
-{
-	glBindVertexArray(ID);
-}
-void VAO::Unbind()
-{
-//	glBindVertexArray(0);
-}
-void VAO::EnableAttribute(GLuint ind)
-{
-	glEnableVertexAttribArray(ind);
-}
-void VAO::DisableAttribute(GLuint ind)
-{
-#ifdef _DEBUG
-	//glDisableVertexAttribArray(ind);
+#ifdef _OPENGL_FIXED_FUNCTION
+#    pragma message( "Compiling for Fixed Function Pipeline" )
+#else
+#    pragma message( "Compiling for Shader Based Programmable Pipeline" )
 #endif
-}
-int  VAO::MaxAttributes()
-{
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &MaxAttrib);
-	return MaxAttrib;
-}
-
 
 
 
 VertexBuffer::~VertexBuffer()
 {
-	//    glDeleteBuffers(1, &ID);
 }
 
 VertexBuffer::VertexBuffer(Vec4 *vertexdata, GLsizei vcount)
@@ -79,13 +50,13 @@ void VertexBuffer::Bind()
 
 void VertexBuffer::Unbind()
 {
-#if _DEBUG
+ 
 #if _OPENGL_FIXED_FUNCTION
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+// 	glDisableClientState(GL_VERTEX_ARRAY);
+// 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 #else
 #endif
-#endif
+ 
 }
 void VertexBuffer::Lock(GLenum access)
 {
@@ -101,23 +72,24 @@ void VertexBuffer::Rebuild()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, ElementCount * sizeof(Vec4), Data);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-//  void VertexBuffer::Write(GLuint pos, GLfloat *data)
-//  {
-//  	glBindBuffer(GL_ARRAY_BUFFER, ID);
-//  	glBufferSubData(GL_ARRAY_BUFFER, 0, ElementCount * sizeof(Vec3), Data);
-//  	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//  }
+void VertexBuffer::Write(GLuint pos, GLfloat *data)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+//	Lock();
+	glBufferSubData(GL_ARRAY_BUFFER, 0, ElementCount * sizeof(Vec3), Data);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 //==================================================================================================================================================
 //__________________________________ INDEX BUFFER CLASS ____________________________________________________________________________________________
 
 IndexBuffer::~IndexBuffer()
-{
-	//    glDeleteBuffers(1, &ID);
+{// CREATE A DELETE BUFFER FUNCTION WHEN ALL DEBUGGING IS COMPLETE
 }
 IndexBuffer::IndexBuffer(GLuint *data, GLsizei count)
-	: ElementCount(count),
-	ID(0)
+    : 
+    ElementCount(count),
+    ID(0)
 {
 	Data = new GLuint[count];
 	memcpy(Data, data, sizeof(GLuint) * count);
@@ -134,29 +106,18 @@ void IndexBuffer::Bind()
 	glIndexPointer(GL_FLOAT, 0, (void *)NULL);
 	glEnableClientState(GL_INDEX_ARRAY);
 #else
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+	_GL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
 #endif
 }
 void IndexBuffer::Unbind()
-{
-#if _DEBUG
-#if _OPENGL_FIXED_FUNCTION
-	glDisableClientState(GL_COLOR_ARRAY);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-#else
-
-#endif
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-#else
-#endif
+{// CREATE A DELETE BUFFER FUNCTION WHEN ALL DEBUGGING IS COMPLETE
 }
 
 //==================================================================================================================================================
 //__________________________________ COLOR BUFFER CLASS ____________________________________________________________________________________________
 
 ColorBuffer::~ColorBuffer()
-{
-	//        glDeleteBuffers(1, &ID);
+{// CREATE A DELETE BUFFER FUNCTION WHEN ALL DEBUGGING IS COMPLETE
 }
 ColorBuffer::ColorBuffer(Vec4 *ColorData, GLsizei count)
 	: ElementCount(count),
@@ -183,15 +144,6 @@ void ColorBuffer::Bind()
 }
 void ColorBuffer::Unbind()
 {
-#if _DEBUG
-#if _OPENGL_FIXED_FUNCTION
-	glDisableClientState(GL_COLOR_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-#else
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-#endif
-#else
-#endif
 }
 
 //==================================================================================================================================================
@@ -210,7 +162,7 @@ NormalBuffer::NormalBuffer(Vec4 *NormalData, GLsizei count)
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, ElementCount * sizeof(Vec4), NormalData, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	_GL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 void NormalBuffer::Bind()
 
@@ -226,14 +178,6 @@ void NormalBuffer::Bind()
 }
 void NormalBuffer::Unbind()
 {
-#if _DEBUG
-#if _OPENGL_FIXED_FUNCTION
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-#else
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-#endif
-#endif
 }
 
 NormalBuffer::NormalBuffer(Vec3 *NormalData, GLsizei vcount)
@@ -260,35 +204,62 @@ VAOBuffer::VAOBuffer()
 	Textures = nullptr;
 	Indices = nullptr;
 	Colors = nullptr;
-
-
+	Woven = false;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
 }
 void VAOBuffer::Attach(VertexBuffer  *vertices)
 {
 	Vertices = vertices;
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, Vertices->ID);
+
+	GLuint Vpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition");
+	glEnableVertexAttribArray(Vpoint);
+	_GL(glVertexAttribPointer(Vpoint, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL));
 }
 void VAOBuffer::Attach(IndexBuffer   *indices)
 {
-
 	Indices = indices;
+	Indices->Bind();
 }
 void VAOBuffer::Attach(NormalBuffer  *normals)
 {
 	Normals = normals;
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, Normals->ID);
+
+	GLint Npoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal");
+	glEnableVertexAttribArray(Npoint);
+	_GL(glVertexAttribPointer(Npoint, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL));
 }
 void VAOBuffer::Attach(UVBuffer *texture)
 {
 	Textures = texture;
+	glActiveTexture(GL_TEXTURE0);
+	_GL(glBindTexture(GL_TEXTURE_2D, Textures->ID));
 }
 void VAOBuffer::Attach(ColorBuffer   *color)
 {
 	Colors = color;
+	_GL(glBindVertexArray(VAO));
+	_GL(glBindBuffer(GL_ARRAY_BUFFER, Colors->ID));
+
+	GLint Cpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");
+	if (Cpoint != -1)
+	{
+		_GL(glEnableVertexAttribArray(Cpoint));
+		_GL(glVertexAttribPointer(Cpoint, 4, GL_FLOAT, GL_FALSE, 0, (char *)NULL));
+	}
+	else
+	{
+		Print("!!! WARNING!!! Passing Attribute that the Shader does not contain!: VertexColor");
+	}
 }
 void VAOBuffer::Bind()
 {
 	if (Woven == true)
 	{
-
 #ifdef  _OPENGL_FIXED_FUNCTION
 		glBindBuffer(GL_ARRAY_BUFFER, BatchID);
 		glVertexPointer(4, GL_FLOAT, sizeof(VertexType), (char *)NULL);
@@ -304,36 +275,21 @@ void VAOBuffer::Bind()
 		Indices->Bind();
 #else
 	 	glBindVertexArray(VAO);
- 		Indices->Bind();
+ 	//	Indices->Bind();
 #endif
-
 	}
 	else
 	{
-
-
-		if (Vertices)  Vertices->Bind();
-		GLuint Vpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexPosition"); glEnableVertexAttribArray(Vpoint);
-		glVertexAttribPointer(Vpoint, 4, GL_FLOAT, GL_FALSE, 0, (char)NULL);
-
-
-		if (Indices)    Indices->Bind();
-
+		glBindVertexArray(VAO);
 		if (Textures)  Textures->Bind();
-		//glActiveTexture(GL_TEXTURE0);
-		//Image::Manager.GetAsset("Moon")->Bind();
-
-		if (Colors)      Colors->Bind();
-		GLuint Cpoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexColor");	glEnableVertexAttribArray(Cpoint);
-		glVertexAttribPointer(Cpoint, 4, GL_FLOAT, GL_FALSE, 0, (void*)NULL);
-
-		if (Normals)    Normals->Bind();
-		GLuint Npoint = glGetAttribLocation(Shader::GetActiveShader()->GetName(), "VertexNormal"); glEnableVertexAttribArray(Npoint);
-		glVertexAttribPointer(Npoint, 4, GL_FLOAT, GL_FALSE, 0, (void*)NULL);
+//		Indices->Bind();
 	}
 }
 void VAOBuffer::Interleave()
 {
+//   Kind of need to figure out a different way to do this. 
+//   Interleaving does produce better frame rates but I lose a major amount of flexibility
+
 	std::vector<VertexType> Buffer;
 	for_loop(Index, Vertices->ElementCount)
 	{
@@ -385,8 +341,3 @@ void VAOBuffer::Unbind()
 // One Stencil attachment point [ GL_STENCIL_ATTACHMENT ]
 // Notice that the framebuffer object itself does not have any image storage(array) in it, 
 // but it has only multiple attachment points.
-
-
-
-
-

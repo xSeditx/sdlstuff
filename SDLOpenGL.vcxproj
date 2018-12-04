@@ -98,7 +98,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <CallingConvention>FastCall</CallingConvention>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glu32.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2Main.lib</AdditionalDependencies>
@@ -124,10 +130,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -136,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GUI.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Buffers.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
@@ -152,6 +163,7 @@
     <ClCompile Include="Source\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\GUI.h" />
     <ClInclude Include="Headers\camera.h" />
     <ClInclude Include="Headers\Core.h" />
     <ClInclude Include="Headers\Light.h" />
@@ -169,13 +181,16 @@
     <ClInclude Include="Headers\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Light.frag" />
+    <None Include="Resources\Light.vert" />
     <None Include="Resources\basic.frag" />
     <None Include="Resources\basic.vert" />
     <None Include="Resources\FF.frag" />
     <None Include="Resources\ff.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="API.txt" />
+    <Text Include="Resources\Future.txt" />
+    <Text Include="Resources\API.txt" />
     <Text Include="Resources\OldShaders.txt" />
     <Text Include="Resources\Removed.txt" />
   </ItemGroup>

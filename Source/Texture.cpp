@@ -245,15 +245,15 @@ UVBuffer::~UVBuffer()
 	//    delete(Image);
 	//    glDeleteBuffers(1, &ID);   
 }
-UVBuffer::UVBuffer(Vec2 *data, GLsizei count)   ///UVBuffer::UVBuffer(Image &img, Vec2 *data,  GLsizei count) remove Image from UV buffer object as its seperate entity
-	: ElementCount(count)
+UVBuffer::UVBuffer(Vec2 *d, GLsizei coun)   ///UVBuffer::UVBuffer(Image &img, Vec2 *data,  GLsizei count) remove Image from UV buffer object as its seperate entity
+	: ElementCount(coun)
 {
-	Data = new Vec2[count];
-	memcpy(Data, data, sizeof(Vec2) * count);
+	Data = new Vec2[ElementCount];
+	memcpy(Data, d, sizeof(Vec2) * ElementCount);
 
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * count, data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * coun, d, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 void UVBuffer::Bind()
