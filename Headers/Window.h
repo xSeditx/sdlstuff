@@ -4,18 +4,22 @@
 
 
 // I HATE WARNINGS
-#pragma warning(disable: 4267)	
-#pragma warning(disable: 4244)	
+// #define _ITERATOR_DEBUG_LEVEL 0
+
+#pragma warning(disable: 4244)	//  conversion from 'float' to 'int', possible loss of data
 #pragma warning(disable: 4005)	
 #pragma warning(disable: 4305)	
-#pragma warning(disable: 4996)	
+#pragma warning(disable: 4996)	// 'fopen': This function or variable may be unsafe
 #pragma warning(disable: 4099)	
 #pragma warning(disable: 4715)	
 #pragma warning(disable: 4800)	
-#pragma warning(disable: 4018)	
+#pragma warning(disable: 4018)
+#pragma warning(disable: 4267)	
 
-#define SCREENWIDTH     256 //640512//
-#define SCREENHEIGHT    240 //480   480//
+
+
+#define SCREENWIDTH     640  //256 //640   512//
+#define SCREENHEIGHT    480  //240 //480   480//
 
 #define RADIANS(x)   ((x)  * 0.01745329251)
 #define DEGREES(x)   ((x)  * 57.2957795131)
@@ -26,9 +30,8 @@ class Camera;
 
 //const bool TRACE = true;
 #define TRACE
-#define FUNCTION_TRACE
-//#define DEBUG
-
+//#define FUNCTION_TRACE
+ 
 
 #define GetRandom( min, max )      ((rand() % (int)(((max) + 1) - (min))) + (min))  
 #define RANDOM(x)                  ((rand() * (1.0 / (1.0 + RAND_MAX))) * (x))
@@ -50,9 +53,12 @@ class Camera;
 
 /*************** DEBUG MACROS FOR DISPLAYING OPEN_GL ERRORS *****************************/
 #define ASSERT(x) if(!(x)){exit(EXIT_FAILURE);}
+ 
+#define TRUE   !FALSE
+#define FALSE  0
+#define ON     1
+#define OFF    0
 
-#define ON  true
-#define OFF false
 
 const bool TEMP_DEBUGGER = OFF;
 #define TEMP_DEBUG(x)   if(TEMP_DEBUGGER){ x }
@@ -64,13 +70,13 @@ const bool TEMP_DEBUGGER = OFF;
 #endif
 
 #ifdef FUNCTION_TRACE
-#define  f_TRACE(x)  std::cout << #x << std::endl
+#    define    f_TRACE(x)  std::cout << #x << "Line: " << __LINE__ << std::endl
 #else
-#define f_TRACE(x)
+#    define    f_TRACE(x)
 #endif
 
 
-#ifdef DEBUG
+#ifdef _DEBUG
 #define _GL(x)           GLClearError();\
                                     (x);\
                               _TRACE(x);\
@@ -79,7 +85,7 @@ const bool TEMP_DEBUGGER = OFF;
 #define _GL(x)  x
 #endif
 
-#ifdef  DEBUG
+#ifdef  _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(...))
 #else
 #define GLCall(x) x
@@ -88,11 +94,12 @@ const bool TEMP_DEBUGGER = OFF;
 
 #define GL_Color(c)      (c * (.0039215686627451))
 
+#define Sqr(x)           ((x)*(x))
 
 // for_loop(Iterator, Counter)
 // Iterator : Variable for which we intend to use in the loop 
 // Counter  : Value which we wish the Loop to count to
-#define for_loop(itr, count)          for(int(itr) = 0; itr < (count); itr++)
+#define for_loop(itr, count)          for(int itr = 0; itr < (count); itr++)
 
 
 

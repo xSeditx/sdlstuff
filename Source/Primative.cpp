@@ -460,6 +460,8 @@ Cube::Cube(Vec3 pos, float size)
 	Polygons->Attach(new NormalBuffer(&NormalList[0], 24));
 	Polygons->Attach(new ColorBuffer(&Cols[0], 24));
 	Polygons->Attach(new IndexBuffer(&IndexList[0], 36));
+	Polygons->Unbind();
+
 
 	Transform = glm::mat4(1.0f); // Set Identity and Rotate all axis followed with the Translation.
 	Transform = glm::rotate(Transform, glm::radians(Rotation.x), Vec3(1.0f, 0.0f, 0.0f));
@@ -530,13 +532,13 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
  			Col.push_back(Vec3(GL_Color(x * 255), GL_Color(y * 255), GL_Color(z * 255)));
  			Col.push_back(Vec3(GL_Color(x * 255), GL_Color(y * 255), GL_Color(z * 255)));
 
-			Ind.push_back(VertexCount + 1);
-			Ind.push_back(VertexCount + 3);
-			Ind.push_back(VertexCount + 2);
-			Ind.push_back(VertexCount);
-			Ind.push_back(VertexCount + 1);
-			Ind.push_back(VertexCount + 2);
 
+		    Ind.push_back(VertexCount);
+		    Ind.push_back(VertexCount + 1 % sectors);
+		    Ind.push_back(VertexCount + 2 % sectors);
+		 	Ind.push_back(VertexCount + 1 % sectors);
+		 	Ind.push_back(VertexCount + 3 % sectors);
+		 	Ind.push_back(VertexCount + 2 % sectors);
  
 			float  magnitude = sqrt(Squared(x) + Squared(y) + Squared(z));
 			if (magnitude != 0)
@@ -577,25 +579,32 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 		}
 	}
    int c = 0;
-   for (float Long = 0; Long < 360;Long += size )
+
+   for (float Lat = 0; Lat < 180; Lat += size )
    {
-	   for (float Lat = 0; Lat < 180;Lat += size )
+	   for (float Long = 0; Long < 360; Long += size )
 	   {
- 		   UV.push_back(Vec2(Norm[ c ].x, Norm[ c ].z));
-		   UV.push_back(Vec2(Norm[c+1].x, Norm[c+1].z));
-		   UV.push_back(Vec2(Norm[c+2].x, Norm[c+2].z));
-		   UV.push_back(Vec2(Norm[c+3].x, Norm[c+3].z));
-		   c += 4;									    
+	  	    UV.push_back(Vec2( Norm[c + 0].x, (Norm[c + 0].z + 1) * .5));
+			UV.push_back(Vec2( Norm[c + 1].x, (Norm[c + 1].z + 1) * .5));
+			UV.push_back(Vec2( Norm[c + 2].x, (Norm[c + 2].z + 1) * .5));
+			UV.push_back(Vec2( Norm[c + 3].x, (Norm[c + 3].z + 1) * .5));
+
+			c += 4;
 	   }
    }
- 
+//  Vec2((1.0f / 360.0f) *  (Lat), (1.0f / 180.0f) * (Long)));
+//  Vec2((1.0f / 360.0f) *  (Lat + size), (1.0f / 180.0f) * (Long)));
+// 	Vec2((1.0f / 360.0f) * (Lat), (1.0f / 180.0f) * (Long + size)));
+//  Vec2((1.0f / 360.0f) * (Lat + size), (1.0f / 180.0f) *(Long + size)));
+
+
 	Polygons = new VAOBuffer();
 	Polygons->Attach(new VertexBuffer(&Verts[0], VertexCount));
 	Polygons->Attach(new IndexBuffer(&Ind[0], IndexCount));
 	Polygons->Attach(new ColorBuffer(&Col[0], ColorCount));
  	Polygons->Attach(new NormalBuffer(&Norm[0], VertexCount));
 	Polygons->Attach(new UVBuffer(&UV[0], VertexCount));
-
+	Polygons->Unbind();
 }
 Plane::Plane(Vec3 pos, Vec3 rotation, float width, float height)
 {
@@ -656,9 +665,8 @@ Plane::Plane(Vec3 pos, Vec3 rotation, float width, float height)
 	Polygons->Attach(new NormalBuffer(N, 4));
 	Polygons->Attach(new UVBuffer(UV, 4));
 	Polygons->Attach(new IndexBuffer(I, 12));
+	Polygons->Unbind();
 
-
-	glBindVertexArray(0);
 }
 
 
@@ -667,20 +675,17 @@ Plane::Plane(Vec3 pos, Vec3 rotation, float width, float height)
 
 
 
-
-
+ 
 Torus::Torus(Vec3 position, int numc, int numt,  float scale)
 {
 	Scale = Vec3(scale);
 	Position = position;
 
-
-
 	std::vector<Vec3> Verts;
-	std::vector<Vec3> Col;
-	std::vector<Vec3> Norm;
-	std::vector<Vec2> UV;
-	std::vector<GLuint> Ind;
+	std::vector<Vec3> Cols;
+	std::vector<Vec3> Norms;
+	std::vector<Vec2> UVs;
+	std::vector<GLuint> Inds;
 
 //	ObjectType = Torus_t;
 //	List = glGenLists(1);
@@ -690,22 +695,25 @@ Torus::Torus(Vec3 position, int numc, int numt,  float scale)
 	double s, t, x, y, z, twopi;
 
 	twopi = 2 * (double)M_PI;
-
+	numc += (numc % 3);	numt+= (numt % 3);
 	for (i = 0; i < numc; i++) {
 		for (j = 0; j <= numt; j++) {
 			for (k = 1; k >= 0; k--) {
 				s = (i + k) % numc + 0.5;
 				t = j % numt;
 
-				x = (1 + .1*cos(s*twopi / numc))*cos(t*twopi / numt);
-				y = (1 + .1*cos(s*twopi / numc))*sin(t*twopi / numt);
-				z = .1 * sin(s * twopi / numc);
+				x = (float)Scale.x * ((1 + .1 * cos(s * twopi / numc)) * cos(t * twopi / numt));
+				y = (float)Scale.y * ((1 + .1 * cos(s * twopi / numc)) * sin(t * twopi / numt));
+				z = (float)Scale.z *      (.1 * sin(s * twopi / numc));
 
 				//glColor3f(GL_Color(x* 255.0), GL_Color(y* 255.0), GL_Color(z * 255.0));
-				Col.push_back(Vec3(GL_Color(x* 255.0), GL_Color(y* 255.0), GL_Color(z * 255.0)));
+				Cols.push_back(Vec3(GL_Color(x* 255.0), GL_Color(y* 255.0), GL_Color(z * 255.0)));
 
 				//glVertex3f(x, y, z);
 				Verts.push_back(Vec3(x, y, z));
+				float Mag = sqrt(Sqr(x) + Sqr(y) * Sqr(z));
+				Norms.push_back(Vec3(x / Mag, y / Mag, z / Mag));
+				UVs.push_back(Vec2(Norms.back().x, Norms.back().y));
 			}
 		}
 	}
@@ -714,6 +722,143 @@ Torus::Torus(Vec3 position, int numc, int numt,  float scale)
 	//glBegin(GL_QUAD_STRIP);
 	for_loop(Index, Verts.size())
 	{
+//		Inds.push_back(Index + 0);
 
 	}
+	for_loop(Index, Verts.size())
+	{
+	//	Inds.push_back(Index + 0);		Inds.push_back(Index + 0);
+		Inds.push_back(Index + 1);
+	}
+
+	Polygons = new VAOBuffer();
+	Polygons->Attach(new VertexBuffer(&Verts[0], Verts.size()));
+	Polygons->Attach(new NormalBuffer(&Norms[0], Norms.size()));
+	Polygons->Attach(new UVBuffer(&UVs[0], UVs.size()));
+	Polygons->Attach(new ColorBuffer(&Cols[0], Cols.size()));
+	Polygons->Attach(new IndexBuffer(&Inds[0], Inds.size()));
+	Polygons->Unbind();
 }
+
+
+
+
+void Torus::Render()
+{
+	Bind();
+	glDrawElements(GL_QUAD_STRIP, Polygons->ElementCount(), GL_UNSIGNED_INT, nullptr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  
+//  #include <unordered_map>
+//  #include <vector> 
+//  
+//  class CameraHandle;
+//  class MeshHandle;
+//  class Transform;
+//  
+//  struct Node
+//  {
+//  	Transform worldTransform;
+//  	Transform localTransform;
+//  	uint16_t parentId;
+//  	uint16_t nodeId;
+//  	bool dirty;
+//  	void rotate(float x, float y, float z)
+//  	{
+//  		localTransform.rotate(x, y, z);
+//  		dirty = true;
+//  	}
+//  	void scale(float x, float y, float z)
+//  	{
+//  		localTransform.scale(x, y, z);
+//  		dirty = true;
+//  	}
+//  	void translate(float x, float y, float z)
+//  	{
+//  		localTransform.translate(x, y, z);
+//  		dirty = true;
+//  	}
+//  };
+//  
+//  struct GroupNode : public Node
+//  {
+//  	std::vector<uint16_t> children;
+//  };
+//  
+//  struct MeshNode : public Node
+//  {
+//  	std::vector<MeshHandle> meshes;
+//  };
+//  
+//  struct CameraNode : public Node
+//  {
+//  	CameraHandle camera;
+//  };
+//  
+//  struct Scene
+//  {
+//  	std::unordered_map<uint8_t, CameraHandle> m_cameras;
+//  	std::unordered_map<uint16_t, Node> m_nodes;
+//  	uint16_t rootNodeId;
+//  
+//  	Transform getWorldTransform(uint16_t nodeId)
+//  	{
+//  		Node node = m_nodes[nodeId];
+//  		if (node.dirty)
+//  		{
+//  			worldTransform = (node.parentId != 0 ? getWorldTransform(node.parentId) : Transform.identity()) * node.localTransform;
+//  			dirty = false;
+//  		}
+//  		return worldTransform;
+//  	}
+//  }
+//  
+//  class Object
+//  {
+//  }
+//  class Mesh : Object
+//  {
+//  }
+//  class Sprite : Object
+//  {
+//  }
+//  
+//  
+//  class Group
+//  {
+//  }
+//  class Scene
+//  {
+//  	vector,,
+//  }
+//  
+//  
+//  
+//  struct Scene {
+//  	std::unordered_map<uint8_t, CameraHandle> m_cameras;
+//  	std::unordered_map<uint16_t, Node> m_nodes;
+//  	uint16_t rootNodeId;
+//  
+//  	Transform getWorldTransform(uint16_t nodeId) {
+//  		Node node = m_nodes[nodeId];
+//  		if (node.dirty) {
+//  			worldTransform = (node.parentId != 0 ? getWorldTransform(node.parentId) : Transform.identity()) * node.localTransform;
+//  			dirty = false;
+//  		}
+//  		return worldTransform;
+//  	}
+//  }
+//  }; <-- -

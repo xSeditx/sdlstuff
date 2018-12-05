@@ -100,19 +100,16 @@ public:
 	// FUNCTIONS FOR THE CAMERA CLASS
 	//=======================================================================================================================================================
 
-	void Update();
-
 	Matrix GetViewMatrix();
 
+	void Update();
 	void Rotate(float pitch, float yaw);
-	void MoveForward(float speed);
 	void MoveBack(float speed);
 	void MoveLeft(float speed);
 	void MoveRight(float speed);
+	void MoveForward(float speed);
 	//=======================================================================================================================================================
  
-	void ClampCamera();
-
 	Matrix RotateX(GLfloat Angle);
 	Matrix RotateY(GLfloat Angle);
 	Matrix RotateZ(GLfloat Angle);

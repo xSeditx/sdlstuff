@@ -39,18 +39,19 @@ out vec3 LPos;
 
 void main()
 {
-
-//  vec3 EyePosition = vec3(ModelViewMatrix[12], ModelViewMatrix[13], ModelViewMatrix[14])
     Fcolor = VertexColor;
-	FNormal   =  VertexNormal.xyz;      // vec3(CameraPos * vec4(VertexNormal.xyz,  1.0));   // 
-	Fposition =   vec3(normalize(CameraPos * vec4(VertexPosition.xyz, 1.0)));	//VertexPosition.xyz;    // 
-
-    Diffuse = MaterialDiffuse.rgb;
-    Ambient = MaterialAmbient.rgb;
-
+	FNormal   =    VertexNormal.xyz;    
+	Fposition =   VertexPosition.xyz;   
 	LPos = LightPosition1;
 
 	gl_TexCoord[0] = gl_MultiTexCoord0;   
     gl_Position = ProjectionMatrix *  ModelViewMatrix * VertexPosition;
-
 }
+
+
+//   vec3(CameraPos * vec4(VertexNormal.xyz,  1.0));   // 
+// vec3(normalize(CameraPos * vec4(VertexPosition.xyz, 1.0)));	//
+//  ((VertexNormal * .2) + VertexPosition); < adjust the vertex position to move towards the normal
+//   Diffuse = MaterialDiffuse.rgb;
+//    Ambient = MaterialAmbient.rgb;
+//  vec3 EyePosition = vec3(ModelViewMatrix[12], ModelViewMatrix[13], ModelViewMatrix[14])

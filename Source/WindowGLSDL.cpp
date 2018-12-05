@@ -713,10 +713,6 @@ void GetOpenGLState()
 
 
 
-
-
-
-
 std::ostream& operator<<(std::ostream &lhv, Vec2 const &rhv)
 {
 	lhv << "X: " << rhv.x << " | " << "Y: " << rhv.y;
@@ -734,5 +730,10 @@ std::ostream& operator<<(std::ostream &lhv, Vec4 const &rhv)
 }
 
 
+Vec3 FindNormals(Vec3 verts)
+{
+	float Mag = sqrt(Sqr(verts.x) + Sqr(verts.y) * Sqr(verts.z));
+	return Vec3(verts.x / Mag, verts.y / Mag, verts.z / Mag);
+}
 
 #endif

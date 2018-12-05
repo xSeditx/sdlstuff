@@ -253,7 +253,7 @@ void VAOBuffer::Attach(ColorBuffer   *color)
 	}
 	else
 	{
-		Print("!!! WARNING!!! Passing Attribute that the Shader does not contain!: VertexColor");
+		//Print("!!! WARNING!!! Passing Attribute that the Shader does not contain!: VertexColor");
 	}
 }
 void VAOBuffer::Bind()
@@ -318,13 +318,7 @@ void VAOBuffer::Interleave()
 }
 void VAOBuffer::Unbind()
 {
-#if _DEBUG
-//	if (Vertices)  Vertices->Unbind();
-//	if (Indices)    Indices->Unbind();
-//	if (Textures)  Textures->Unbind();
-//	if (Colors)      Colors->Unbind();
-//	if (Normals)    Normals->Unbind();
-#endif
+	glBindVertexArray(0);
 }
 
 //==================================================================================================================================================

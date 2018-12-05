@@ -82,12 +82,5 @@ public:
 	Torus(Vec3 position, int numc, int numt,  float scale);
 	Torus(Vec3 position, int numc, int numt );
 
-	// Buffer *VBO;
-
-	void Set_Position(float x, float y, float z);
-	void Set_Rotation(float x, float y, float z);
-
-	void Rotate(float x, float y, float z);
-	void Render();
-	void RenderVBO();
+	void Render() override;
 };

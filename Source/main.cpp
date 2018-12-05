@@ -72,7 +72,7 @@ void LoadStuff()
 void main()
 {
 
-	Window MainWin(10, 30, 640, 480, "SDL OpenGL TestWindow");
+	Window MainWin(100, 50, 640, 480, "SDL OpenGL TestWindow");
 	MainWin.Callbacks.SetOnKeyDown(Keydown);
 	MainWin.Callbacks.SetOnMouseMove(MouseMove);
 	MainWin.SetUpdate(Update);
@@ -114,7 +114,7 @@ void main()
     MainWin.World->Groups[0].Add( Block( Vec3( -10,   0,   0),  1  ) );
 
 	Sphere center(Vec3(0, 0, 0), 1, 25);
-	center.Surface = new Material(*MoonMaterial());
+	center.Add(new Material(*MoonMaterial()));
     MainWin.World->Groups[0].Add(center);
 
    int dist = 100;
@@ -126,9 +126,14 @@ void main()
    for_loop(Index, 200)
    {
 	   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
-	   MainWin.World->Groups[0].Add(Block(pos, 2), StoneMaterial());
+	   MainWin.World->Groups[0].Add(Block(pos, 2), StoneMaterial()); // Torus(pos, 10, 10, 3)
    }
-
+   for_loop(Index, 20)
+   {
+	//   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
+	//   MainWin.World->Groups[0].Add(Sphere(pos, 1, 25), MoonMaterial()); // Torus(pos, 10, 10, 3)
+   }
+  
 	float
 		Xangle = 0,
 		Yangle = 0;
@@ -149,15 +154,15 @@ void main()
 					sin(RADIANS(Yangle)) * 10
 				)
 			);
-	     // 	MainWin.World->Groups[0].Objects[0].Position = MainWin.World->Lights[0].Position;
+	     	MainWin.World->Groups[0].Objects[0].Set_Position(MainWin.World->Lights[0].Position);
 			MainWin.Sync();
 			Xangle+= .5;
 			Yangle+= .5;
 		}
  
 
-	//	Print(DEGREES(MainWin.World->Camera.Rotation.x));
-	//	Print(DEGREES(MainWin.World->Camera.Rotation.y));
+		Print(DEGREES(MainWin.World->Camera.Rotation.x));
+		Print(DEGREES(MainWin.World->Camera.Rotation.y));
 	}
 	glBindVertexArray(0);
 }

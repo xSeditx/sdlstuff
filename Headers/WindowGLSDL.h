@@ -17,10 +17,15 @@
 #include"SDL.h"
 #include"SDL_syswm.h"
 
-#include <iostream>
-#include <vector>
-#include <functional>
- 
+#include < vector >
+#include < string >
+#include < fstream >
+#include < iostream >
+#include < strstream >
+#include < functional >
+
+
+
 #ifdef _WIN32
 #    define GLEW_STATIC
 #    pragma comment(lib, "user32.lib")
@@ -33,17 +38,7 @@
 #    include"windows.h"
 #endif
 
-//#define _ITERATOR_DEBUG_LEVEL 0
-
-#pragma warning(disable: 4244)	//  conversion from 'float' to 'int', possible loss of data
-#pragma warning(disable: 4005)	
-#pragma warning(disable: 4305)	
-
-#pragma warning(disable: 4996)	// 'fopen': This function or variable may be unsafe
-#pragma warning(disable: 4099)	
-#pragma warning(disable: 4715)	
-#pragma warning(disable: 4800)	
-#pragma warning(disable: 4018)
+#include"Window.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                         GLM COMPATIBILITY                                                                                                                       
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,25 +63,17 @@ class Shader;
 void GetOpenGLState();
 void GetOpenGLInfo();
 
-#define TRUE   1
-#define FALSE  0
-#define ON     1
-#define OFF    0
 
-#define RADIANS(angle)           ((angle) * .0174532925199444)
-#define DEGREES(angle)           ((angle) * (180.0f / M_PI) )    
 
-#define GL_Color(c)              (c * (.0039215686627451))
-#define Print(x)                 std::cout << x << std::endl
-#define for_loop(iter, count)    for(int iter = 0;iter < (count); iter++)
+
+
+
 #if _DEBUG
 #    define f_Trace(x)    Print(x);
 #    define _GL(x)           GLClearError();\
                                         (x);\
                                   _TRACE(x);\
-                   ASSERT(GLLogCall(#x, __FILE__, __LINE__))
- 
-
+   ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 
 #else
 #    define f_Trace(x)
@@ -447,12 +434,6 @@ void EngineErrorResponse(int error, const int data, char *str);
 =================================================================================================================================================================================================*/
 
 
-
-
-#include<string>
-#include<fstream>
-#include<vector>
-#include<strstream>
 #define glCheckError() glCheckError_(__FILE__, __LINE__) 
 
 
@@ -515,7 +496,7 @@ public:
 				s >> junk >> file[0] >> file[1] >> file[2] >> file[3];
 
 				// meshShip.tris.push_back({ verts[f[0]-1], verts[f[1]-1], verts[f[2]-1], 0.0f, 0.0f, 0.0f, FG_YELLOW });
-				//  meshShip.tris.push_back({ verts[f[0]-1], verts[f[2]-1], verts[f[3]-1], 0.0f, 0.0f, 0.0f, FG_YELLOW });
+				// meshShip.tris.push_back({ verts[f[0]-1], verts[f[2]-1], verts[f[3]-1], 0.0f, 0.0f, 0.0f, FG_YELLOW });
 			}
 		}
 	}
@@ -629,11 +610,13 @@ private:
 			break;
 		}
 	}
+
 };
-
-
  
 
 std::ostream& operator<<(std::ostream &lhv, Vec2 const &rhv);
 std::ostream& operator<<(std::ostream &lhv, Vec3 const &rhv);
 std::ostream& operator<<(std::ostream &lhv, Vec4 const &rhv);
+
+
+Vec3 FindNormals(Vec3 verts);

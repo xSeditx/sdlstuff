@@ -1,8 +1,16 @@
+//	glm::mat4 Pitch = glm::rotate(Identity, Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+//	glm::mat4 Yaw   = glm::rotate(Identity, Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+//	glm::mat4 Roll  = glm::rotate(Identity, Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+//	ViewMatrix = (Roll * Pitch *  Yaw) * (glm::translate(glm::mat4(1.0f), -Position));
+//    0           1            2         3
+//0  RightX      RightY      RightZ      0
+//1  UpX         UpY         UpZ         0
+//2  LookX       LookY       LookZ       0
+//3  PosX        PosY        PosZ        1
+
 #include"camera.h"
 
 Viewport *Viewport::Camera;
-
-
 
 
 #ifdef _OPENGL_FIXED_FUNCTION
@@ -106,31 +114,21 @@ Viewport::Viewport(Vec3 position, Vec3 rotation)
 }
 void Viewport::Update()
 {
-	glm::mat4 Pitch = glm::rotate(Identity, Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::mat4 Yaw   = glm::rotate(Identity, Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-//	glm::mat4 Roll  = glm::rotate(Identity, Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-//	ViewMatrix = (Roll * Pitch *  Yaw) * (glm::translate(glm::mat4(1.0f), -Position));
+	ViewMatrix = RotateX(Rotation.x) * RotateY(Rotation.y) * (glm::translate(glm::mat4(1.0f), Position)); //  (Pitch *  Yaw) *
 
-	ClampCamera();
-	ViewMatrix = RotateX(Rotation.x) * RotateY(Rotation.y) * (glm::translate(glm::mat4(1.0f), -Position)); //  (Pitch *  Yaw) *
-
+	Up = glm::normalize(Vec3(ViewMatrix[0][1], ViewMatrix[1][1], ViewMatrix[2][1]));
+	Right = glm::normalize(Vec3(ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]));
 	Forward = glm::normalize(Vec3(ViewMatrix[0][2], ViewMatrix[1][2], ViewMatrix[2][2]));
-	Right   = glm::normalize(Vec3(ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]));
-
+	ViewMatrix = glm::lookAt(Position, Position - Forward, Up);
 }
-Matrix Viewport::GetViewMatrix()
+void Viewport::Rotate(float pitch, float yaw)
 {
-	ViewMatrix = glm::lookAt(Position, Position + Forward, Up);
-	return ViewMatrix; 
-}
-
-void Viewport::MoveForward(float speed)
-{
-	Position -= (speed * Forward);
+	Rotation.x -= yaw * RADIANS(.5);//.005;
+	Rotation.y -= pitch * RADIANS(.5); //.008;
 }
 void Viewport::MoveBack(float speed)
 {
-	Position += (speed * Forward);
+	Position -= (speed * Forward);
 }
 void Viewport::MoveLeft(float speed)
 {
@@ -140,53 +138,55 @@ void Viewport::MoveRight(float speed)
 {
 	Position += (speed)* Right;
 }
-
+void Viewport::MoveForward(float speed)
+{
+	Position += (speed * Forward);
+}
 Matrix Viewport::RotateX(GLfloat angle)
 {
 	Matrix ret = {
-		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f,       0.0f,        0.0f, 0.0f,
 		0.0f, cos(angle), -sin(angle), 0.0f,
 		0.0f, sin(angle),  cos(angle), 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
+		0.0f,       0.0f,        0.0f, 1.0f
 	};
 	return ret;
 }
 Matrix Viewport::RotateY(GLfloat angle)
 {
+	Matrix ret = { 
+		cos(angle), 0.0f,-sin(angle), 0.0f,
+		      0.0f, 1.0f,       0.0f, 0.0f,
+		sin(angle), 0.0f, cos(angle), 0.0f,
+		      0.0f, 0.0f,       0.0f, 1.0f
+	};
+	return ret;
+}
+Matrix Viewport::RotateZ(GLfloat angle)
+{
 	Matrix ret = {
 		cos(angle), 0.0f,-sin(angle), 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
 		sin(angle), 0.0f, cos(angle), 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
+		      0.0f, 0.0f,       1.0f, 0.0f,
+	   	      0.0f, 0.0f,       0.0f, 1.0f
 	};
 	return ret;
 }
-Matrix Viewport::RotateZ(GLfloat Angle)
+Matrix Viewport::GetViewMatrix()
 {
-	Matrix ret = {
-		0, 0.0f,0, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0, 0.0f,0, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
-	};
-	return ret;
-}
-void Viewport::Rotate(float pitch, float yaw)
-{
-	Rotation.x -= yaw * RADIANS(.5);//.005;
-	Rotation.y -= pitch * RADIANS(.5); //.008;
-}
-void Viewport::ClampCamera()
-{
-	if (Rotation.x > RADIANS(89))  Rotation.x = RADIANS(89);
-	if (Rotation.x < -RADIANS(89)) Rotation.x = -RADIANS(89);
+	return ViewMatrix;
 }
 
 
 #endif
 
-
-
+// void Viewport::ClampCamera()
+// {
+// }
+//   if (Rotation.x > RADIANS(89))  Rotation.x = RADIANS(89);
+//  if (Rotation.x < -RADIANS(89)) Rotation.x = -RADIANS(89);
+// if (Rotation.x > RADIANS(269)) Rotation.x = RADIANS(269);
+// if (Rotation.x < RADIANS(90)) Rotation.x = RADIANS(90);
 
 
 
