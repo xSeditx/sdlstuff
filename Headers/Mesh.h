@@ -55,26 +55,34 @@ public:
 	virtual void Update() = 0;
 	virtual void Render() = 0;
 
+	void Set_Scale(Vec3 scale)          { Scale = scale;        }
+	void Set_Rotation(Vec3 rot)         { Rotation = rot;       }
+	void Set_Position(Vec3 pos)         { Position = pos;       }
+	void Set_Transform(Matrix mat)      { Transform = mat;      }
+	void Set_VertexCount(GLuint Vcount) { VertexCount = Vcount; }
 
-	void Set_Rotation(Vec3 rot) { Rotation = rot; }
-	void Set_Position(Vec3 pos) { Position = pos; }
-	void Set_Scale(Vec3 scale)  { Scale = scale;  }
-	void Set_Transform(Matrix mat) { Transform = mat; }
+	Vec3 Get_Position()      { return Position;    }
+	Vec3 Get_Rotation()      { return Rotation;    }
+	Vec3 Get_Scale()         { return Scale;       }
+	GLuint ElementCount()    { return IndexCount;  }
+	GLuint Get_VertexCount() { return VertexCount; }
+	Material Get_Surface()   { return *Surface;    }
 
-
-	Vec3 Get_Position() { return Position; }
-	Vec3 Get_Rotation() { return Rotation; }
-	Vec3 Get_Scale()    { return Scale;    }
-	Material Get_Surface() { return *Surface; }
+	int Mesh_ID() { return ID; }
 
 	inline void Object::Add(VAOBuffer *vao)    { Polygons = vao; }
 	inline void Object::Add(Material *surface) { Surface = surface; }
 
-	void LoadOBJ(char *file);
+	void Object::LoadOBJ(char *file); // Might make this a static and return a pointer to the created object
 
-
+	char *Name;
 
 protected:
+
+	GLuint VertexCount;
+	GLuint IndexCount;
+
+	int ID;
 
 	Vec3 Position = Vec3(1.0f);
 	Vec3 Rotation = Vec3(1.0f);

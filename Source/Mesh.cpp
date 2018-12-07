@@ -91,7 +91,7 @@ void Mesh::Bind()
 
 	Polygons->Bind();
 	Matrix MVP = Viewport::Camera->GetViewMatrix();
-	Shader::GetActiveShader()->SetCacheUniforms( Viewport::Camera->ViewMatrix * Transform, Viewport::Camera->ProjectionMatrix);
+	Shader::GetActiveShader()->SetCacheUniforms(Transform, Viewport::Camera->ViewMatrix, Viewport::Camera->ProjectionMatrix);
 	Shader::GetActiveShader()->SetUniformMat4("CameraPos", Viewport::Camera->ViewMatrix * Transform);
 #endif
 }
@@ -106,6 +106,9 @@ void Mesh::Render()
 {
 	Update();
 	Bind();
+	//Rotation.x++;
+	//.y++;
+
 	glDrawElements(GL_TRIANGLES, Polygons->ElementCount(), GL_UNSIGNED_INT, nullptr);
 }
 void Mesh::Update()

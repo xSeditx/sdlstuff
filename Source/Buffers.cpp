@@ -274,7 +274,7 @@ void VAOBuffer::Bind()
 		glEnableClientState(GL_NORMAL_ARRAY);
 		Indices->Bind();
 #else
-	 	glBindVertexArray(VAO);
+	 	glBindVertexArray(VAO); // STUPID WOVEN SHIT, PERHAPS I SHOULD MAKE THESE TOTALLY DIFFERENT OBJECTS, LIKE, WOVEN MESH OR SOMETHING IDK
  	//	Indices->Bind();
 #endif
 	}

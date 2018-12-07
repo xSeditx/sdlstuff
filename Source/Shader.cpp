@@ -23,7 +23,8 @@ Shader::Shader(const char* vertpath, const char* fragpath)
 #ifdef _OPENGL_FIXED_FUNCTION	 
 #else
 	ProjectionMatrixLOC = GetUniformLocation("ProjectionMatrix");
-	ModelViewMatrixLOC = GetUniformLocation("ModelViewMatrix");
+	ModelMatrixLOC = GetUniformLocation("ModelMatrix");
+	ViewMatrixLOC = GetUniformLocation("ViewMatrix");
 #endif
 }
 Shader::Shader()
@@ -112,10 +113,11 @@ void Shader::AttachUniform(GLchar *name, Uniformtype type, void *variable)
 {
 	Uniforms.push_back(Uniform(type, name, variable));
 }
-void Shader::SetCacheUniforms(Matrix mv, Matrix p)
+void Shader::SetCacheUniforms(Matrix m, Matrix v , Matrix p)
 {
-	glUniformMatrix4fv(ModelViewMatrixLOC, 1, GL_FALSE, glm::value_ptr(mv));
- 	glUniformMatrix4fv(ProjectionMatrixLOC, 1, GL_FALSE, glm::value_ptr(p));
+	glUniformMatrix4fv(ModelMatrixLOC, 1, GL_FALSE, glm::value_ptr(m));
+	glUniformMatrix4fv(ViewMatrixLOC, 1, GL_FALSE, glm::value_ptr(v));
+	glUniformMatrix4fv(ProjectionMatrixLOC, 1, GL_FALSE, glm::value_ptr(p));
 }
 
 GLint Shader::GetUniformLocation(GLchar *name)
@@ -216,3 +218,17 @@ Shader* Shader::GetActiveShader()
 GLuint Shader::VertexLocation;
 GLuint Shader::ColorsLocation;
 GLuint Shader::NormalsLocation;
+
+
+
+
+void Shader::Push(Shader *shad)
+{
+	ActiveShader.push_back(shad);
+}
+Shader* Shader::Pop()
+{
+	Shader *ret = ActiveShader.back();
+	ActiveShader.pop_back();
+	return ret;
+}

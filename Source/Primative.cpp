@@ -28,9 +28,9 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors, Material *mat)
 //======================================================================================================================================================================================
 
 Block::Block(Vec3 pos, float size)
-	:
-	VertexCount(0)
+
 {
+	VertexCount = 0;
 	//f_TRACE(Print("Block Constructor"));
 	Position = pos;
 
@@ -250,9 +250,10 @@ Block::Block(Vec3 pos, float size)
 }
 
 Cube::Cube(Vec3 pos, float size)
-	:
-	VertexCount(0)
+
 {
+
+	VertexCount = 0;
 	//f_TRACE(Print("Block Constructor"));
 	Position = pos;
 
@@ -477,8 +478,8 @@ Cube::Cube(Vec3 pos, float size)
 
 Sphere::Sphere(Vec3 pos, float radius, int sectors)
 	:
-	VertexCount(0),
-	ColorCount(0),
+//	VertexCount(0),
+//	ColorCount(0),
 	Radius(radius)
 
 {
@@ -502,6 +503,8 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
 
 	std::vector<GLuint> Ind;
 	std::vector<Vec2> UV;
+
+	int ColorCount=0, VertexCount=0;
 	for (float Lat = 0;Lat < 360;Lat += size) 
 	{
 		for (float Long = 0;Long < 180;Long += size)
@@ -584,12 +587,17 @@ Sphere::Sphere(Vec3 pos, float radius, int sectors)
    {
 	   for (float Long = 0; Long < 360; Long += size )
 	   {
-	  	    UV.push_back(Vec2( Norm[c + 0].x, (Norm[c + 0].z + 1) * .5));
-			UV.push_back(Vec2( Norm[c + 1].x, (Norm[c + 1].z + 1) * .5));
-			UV.push_back(Vec2( Norm[c + 2].x, (Norm[c + 2].z + 1) * .5));
-			UV.push_back(Vec2( Norm[c + 3].x, (Norm[c + 3].z + 1) * .5));
+		   UV.push_back(Vec2(Norm[c + 0].x, (Norm[c + 0].z + 1) * .5));
 
-			c += 4;
+		   UV.push_back(Vec2(Norm[c + 1].x, (Norm[c + 1].z + 1) * .5));
+		   UV.push_back(Vec2(Norm[c + 2].x, (Norm[c + 2].z + 1) * .5));
+
+		   UV.push_back(Vec2(Norm[c + 3].x, (Norm[c + 3].z + 1) * .5));
+		 
+
+		                      //Norm[c + 3].x, (Norm[c + 3].z + 1) * .5));
+		//   UV.push_back(Vec2(cos(RADIANS(Long))* .5 + .5, sin(RADIANS(Lat))* .5 + .5));
+		   c += 4;
 	   }
    }
 //  Vec2((1.0f / 360.0f) *  (Lat), (1.0f / 180.0f) * (Long)));
@@ -754,7 +762,12 @@ void Torus::Render()
 
 
 
+Diamond::Diamond(Vec3 position, float size)
+{
 
+//	Sphere ret(position, size, 4);
+//	*Polygons = *ret.Polygons;
+}
 
 
 

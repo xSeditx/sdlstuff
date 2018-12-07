@@ -144,6 +144,12 @@
     <None Include="Resources\Light.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="GUI.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GUI.Vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\OldShaders.txt">

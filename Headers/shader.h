@@ -54,13 +54,14 @@ public:
 	void Shader::SetUniformMat4(GLchar *name, Matrix &matrix);
 	void Shader::SetTexture(GLchar *name, int slot);
 	void Shader::AttachUniform(GLchar *name, Uniformtype type, void *variable);
-	void Shader::SetCacheUniforms(Matrix mv, Matrix p);
+	void Shader::SetCacheUniforms(Matrix m, Matrix v, Matrix p);
 
 	GLint Shader::GetUniformLocation(GLchar *name);
 	GLuint Shader::GetName();
 
 	int ProjectionMatrixLOC = 0;
-	int ModelViewMatrixLOC = 0;
+	int ViewMatrixLOC = 0;
+	int ModelMatrixLOC = 0;
 
 	static Shader* GetActiveShader();
 	static std::vector<Shader *> Shader::ActiveShader;
@@ -69,6 +70,9 @@ public:
 	static GLuint ColorsLocation;
 	static GLuint NormalsLocation;
 
+
+	void Push(Shader *shad);
+	Shader *Pop();
 	// Return to this in the future, need a means of setting the values and while a pair can cache the location returning it might require a map. 
 	//	std::vector<std::pair<char*, int>> UniformCache;
 	//	void Shader::RegisterUniform(char *name)

@@ -1031,3 +1031,12 @@ void VAOBuffer::Bind()
 	}
 	else
 	{ 
+
+	
+
+//	glActiveTexture(GL_TEXTURE1);
+//	Skin->NormalsTexture.Bind();
+//	glActiveTexture(GL_TEXTURE2);
+//	Skin->GlowTexture.Bind();
+//	glActiveTexture(GL_TEXTURE3);
+//	Skin->SpecularTexture.Bind();

@@ -114,7 +114,7 @@ Viewport::Viewport(Vec3 position, Vec3 rotation)
 }
 void Viewport::Update()
 {
-	ViewMatrix = RotateX(Rotation.x) * RotateY(Rotation.y) * (glm::translate(glm::mat4(1.0f), Position)); //  (Pitch *  Yaw) *
+	ViewMatrix = RotateX(Rotation.x) * RotateY(Rotation.y) * (glm::translate(glm::mat4(1.0f), Position)); //  (Pitch *  Yaw) *RotateZ(RADIANS(1)) * 
 
 	Up = glm::normalize(Vec3(ViewMatrix[0][1], ViewMatrix[1][1], ViewMatrix[2][1]));
 	Right = glm::normalize(Vec3(ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]));
@@ -166,7 +166,7 @@ Matrix Viewport::RotateZ(GLfloat angle)
 {
 	Matrix ret = {
 		cos(angle), 0.0f,-sin(angle), 0.0f,
-		sin(angle), 0.0f, cos(angle), 0.0f,
+		sin(angle), 1.0f, cos(angle), 0.0f,
 		      0.0f, 0.0f,       1.0f, 0.0f,
 	   	      0.0f, 0.0f,       0.0f, 1.0f
 	};
@@ -174,11 +174,37 @@ Matrix Viewport::RotateZ(GLfloat angle)
 }
 Matrix Viewport::GetViewMatrix()
 {
-	return ViewMatrix;
+	return ViewMatrixStack.top();
 }
 
 
+
+
+
+
+
+void Viewport::PushProjectionMatrix(Matrix projmat)
+{
+	ProjectionMatrixStack.push(projmat);
+}
+void Viewport::PushViewMatrix(Matrix viewmat)
+{
+	ProjectionMatrixStack.push(viewmat);
+}
+
+void Viewport::PopProjectionMatrix()
+{
+	ProjectionMatrixStack.pop();
+}
+void Viewport::PopViewMatrix()
+{
+	ViewMatrixStack.pop();
+}
 #endif
+
+
+
+
 
 // void Viewport::ClampCamera()
 // {
@@ -187,11 +213,6 @@ Matrix Viewport::GetViewMatrix()
 //  if (Rotation.x < -RADIANS(89)) Rotation.x = -RADIANS(89);
 // if (Rotation.x > RADIANS(269)) Rotation.x = RADIANS(269);
 // if (Rotation.x < RADIANS(90)) Rotation.x = RADIANS(90);
-
-
-
-
-
 //Right = glm::normalize(glm::cross(cameraFront, cameraUp));
 //if (Rotation.y < .0)    Rotation.y += 360.0f;
 //if (Rotation.y> 360.0f)  Rotation.y -= 360.0f;

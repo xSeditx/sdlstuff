@@ -6,6 +6,9 @@
 class Sprite;
 #include"core.h"
 #include"texture.h"
+#include"Material.h"
+#include"buffers.h"
+
 
 struct Quad
 {
@@ -66,11 +69,7 @@ private:
 class Sprite : public Object
 {
 
-	Sprite(char *name, Image *source, Vec2 dimensions, int numstates)
-	{
-
-	}
-
+	Sprite(char *name, Image *source, Vec2 dimensions, int numstates);
 	int ID;
 
 	GLuint CurrentState;
@@ -82,25 +81,24 @@ class Sprite : public Object
 	float AnimationTimer;
 	float AnimationLength;
 
-
 	bool Moving;     // Is it currently Animating
 	bool Composite;  // Is it made up of multiple sprites
 					 // _______________________________________________________________________________________________________________________
-	void SetAnimationSpeed(float speed) { Speed = speed; }
-	void ResetFrames() {}
+	void SetAnimationSpeed(float speed);
+	void ResetFrames();
 public:
-	void  Bind() override {}
-	void  Unbind() override {}
-	void  Update() override {}
-	void  Render() override {}
-
-
+	void  Bind() override;
+	void  Unbind() override ;
+	void  Update() override ;
+	void  Render() override ;
 	void  Render(Vec2 pos);
 
-	char *Name;
 	static AssetManager<Sprite> Manager;
-
 
 private:
 	float Speed;
 };
+
+
+
+

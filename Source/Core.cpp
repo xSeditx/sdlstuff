@@ -30,14 +30,14 @@ void Scene::Render()
 	{
 		Surface->Bind();
 	}
-	{			
-		Camera.Update();
 
-		for (auto& G : Groups)
-		{
-			G.Render();
-		}
+	Camera.Update();
+
+	for (auto& G : Groups)
+	{
+		G.Render();
 	}
+
 }
 void Scene::AddGroup(const Group& group)
 {

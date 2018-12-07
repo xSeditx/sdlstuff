@@ -10,9 +10,13 @@ void Material::Bind()
 {
 	if (Renderer != NULL)
 	{
-		Shader::ActiveShader.push_back(Renderer);
-		Renderer->Enable();
+		if (Renderer != Shader::GetActiveShader())
+		{
+			Shader::ActiveShader.push_back(Renderer);
+			//Shader::ActiveShader.Push(Renderer)
+			Renderer->Enable();
 
+		}
 		Shader::GetActiveShader()->SetUniform3f("MaterialAmbient", SurfaceColor.Ambient);
 		Shader::GetActiveShader()->SetUniform3f("MaterialDiffuse", SurfaceColor.Diffuse);
 		Shader::GetActiveShader()->SetUniform3f("MaterialSpecular", SurfaceColor.Specular);
@@ -26,15 +30,6 @@ void Material::Bind()
 		glActiveTexture(GL_TEXTURE1);
 		Skin->NormalsTexture.Bind();
 		Shader::GetActiveShader()->SetTexture("NormalsTexture", 1);
-
-
-//	glActiveTexture(GL_TEXTURE1);
-//	Skin->NormalsTexture.Bind();
-//	glActiveTexture(GL_TEXTURE2);
-//	Skin->GlowTexture.Bind();
-//	glActiveTexture(GL_TEXTURE3);
-//	Skin->SpecularTexture.Bind();
-
 		Skin->TextureCoords.Bind();
 	}
 }
@@ -51,7 +46,6 @@ void Material::Unbind()
 		Shader::ActiveShader.pop_back();
 	}
 }
-
 void Material::Attach(Skinenum style, Image *skin)
 {
 	switch (style)
@@ -70,7 +64,6 @@ void Material::Attach(Skinenum style, Image *skin)
 		break;
 	default:
 		EngineErrorResponse(0x123, NULL, "Improper Texture Format");
-
     }
 };
 void Material::SetSurfaceColor(Vec3 A, Vec3 D, Vec3 S)

@@ -54,7 +54,6 @@ void Light::Bind()
 	Shader::GetActiveShader()->SetUniform3f("AmbientLight", AmbientColor);
 	Shader::GetActiveShader()->SetUniform3f("DiffuseLight", DiffuseColor);
 	Shader::GetActiveShader()->SetUniform3f("SpecularLight", SpecularColor);
-	
 	Shader::GetActiveShader()->SetUniform3f("LightPosition1", Position);
 	
 }
@@ -73,3 +72,15 @@ void Light::Render()
 //glEnd();
 	Visual->Render();
 }
+
+
+
+
+///Timmy The Randmoly TippetToday at 4:34 AM
+//   now you do
+//   view matrix * objects model matrix * light model matrix * vec3(0, 0, 0, 1);
+//   light model matrix * vec3(0, 0, 0, 1) = lightPosition
+//   so where the light ends up is quite arbitrary
+
+
+//ViewMatrix * ModelMatrix * (Light * ModelMatrix)

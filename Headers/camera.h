@@ -1,6 +1,6 @@
 #pragma once
 #include"WindowGLSDL.h"
-
+#include<stack>
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 
 
@@ -116,6 +116,14 @@ public:
 
 	static Viewport *Camera;
 
+	std::stack<Matrix> ViewMatrixStack;
+	std::stack<Matrix> ProjectionMatrixStack;
+
+	void PushProjectionMatrix(Matrix projmat);
+	void PushViewMatrix(Matrix viewmat);
+
+	void PopProjectionMatrix();
+	void PopViewMatrix();
 	Vec3
 		Position,
 		Rotation,

@@ -9,39 +9,76 @@ uniform sampler2D NormalsTexture;
 //-------------------------------------------------------------------------
 //        LIGHTING IN
 
-in vec3 Diffuse;
 in vec3 Ambient;
 in vec3 LPos;
 
 
 //-------------------------------------------------------------------------
-
- 
 in vec3 Fposition;
-in vec4 Fcolor;
+in vec4 FColor;
 in vec3 FNormal;
+ 
 
 void main()
-{
-    vec3 LightColor = vec3(1.0, 1.0, 1.0);
-	float distance = length(LPos - Fposition);
+{ 
 
-    vec3 Norm = texture(NormalsTexture, gl_TexCoord[0].st).xyz;
-   // Norm = normalize(Norm * 2.0 - 1.0);
+	float Distance = length(LPos - Fposition);
+    vec3  LightVector = normalize(LPos - Fposition);                               // GET THE DIRECTION OF THE LIGHT VECTOR
 
-	//Norm *= dot(FNormal, Norm);
+    float Intensity = max(dot(FNormal , LightVector), 0.1);  
+    Intensity = Intensity * (1.0 / (1.0 + (0.000025 * (Distance * Distance))));  
 
-    vec3 LightDir = normalize(LPos - Fposition);
+    vec3 result = texture(DiffuseTexture, gl_TexCoord[0].st).xyz;  
 
-    vec3 diffuse = max(dot(Norm, LightDir), 0.1) * LightColor;
-
-    diffuse = diffuse * (1.0 / (1.0 + (0.00125 * (distance * distance))));
-    vec3 result = (diffuse) *  texture(DiffuseTexture, gl_TexCoord[0].st); // 
-    gl_FragColor =   vec4(result, 1.0);// * diffuse;// * (Fcolor * .5); //
+    gl_FragColor =  vec4(result,1.0f) * Ambient * Intensity;
 }
  
 
 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ //    vec3 NormalMap = texture(NormalsTexture, gl_TexCoord[0].st).xyz;
+
+   //FColor = vec4( Intensity);                                                 
+   //gl_TexCoord[0] = gl_MultiTexCoord0;                                        
+
+
+//
+//    vec3 LightColor = vec3(1.0, 1.0, 1.0);
+//	float distance = length(LPos - Fposition);
+//
+//   vec3 Norm = texture(NormalsTexture, gl_TexCoord[0].st).xyz;
+//  // Norm = normalize(Norm * 2.0 - 1.0);
+//
+//	//Norm *= dot(FNormal, Norm);
+//
+//   vec3 LightDir = normalize(LPos - Fposition);
+//
+//   vec3 diffuse = max(dot(Norm, LightDir), 0.1) * LightColor;
+//
+//   diffuse = diffuse * (1.0 / (1.0 + (0.00125 * (distance * distance))));
+//   vec3 result = (diffuse) *  texture(DiffuseTexture, gl_TexCoord[0].st); // 
+//   gl_FragColor =   vec4(result, 1.0);// * diffuse;// * (Fcolor * .5); //
+//
 
 
 

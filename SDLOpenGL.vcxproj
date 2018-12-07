@@ -181,12 +181,14 @@
     <ClInclude Include="Headers\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GUI.frag" />
     <None Include="Resources\Light.frag" />
     <None Include="Resources\Light.vert" />
     <None Include="Resources\basic.frag" />
     <None Include="Resources\basic.vert" />
     <None Include="Resources\FF.frag" />
     <None Include="Resources\ff.vert" />
+    <None Include="GUI.Vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Future.txt" />

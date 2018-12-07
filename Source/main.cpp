@@ -30,10 +30,15 @@ void Render()
 }
 class MyApp : public Application
 {
+	void Update()
+	{
 
+	}
+	void Render()
+	{
+
+	}
 };
-
-
 void Keydown(Uint16 Keycode, Uint16 ScanCode, Uint16 Modifier, Uint8 rep)
 {
 	switch (Keycode)
@@ -52,13 +57,10 @@ void Keydown(Uint16 Keycode, Uint16 ScanCode, Uint16 Modifier, Uint8 rep)
 		break;
 	}
 }
-
 void  MouseMove(int mX, int mY, int relX, int relY, bool Left, bool Right, bool Middle)
 {
 		Window::SCREEN->World->Camera.Rotate(-relX, relY);
 }
- 
-
 void LoadStuff()
 {
 	Image::Manager.Add(new Image("Moon", "Resources//Moon.bmp"));
@@ -66,8 +68,10 @@ void LoadStuff()
 	Image::Manager.Add(new Image("BrickNormals", "Resources\\Brick\\Brickn.bmp"));
 	Image::Manager.Add(new Image("StoneDiffuse", "Resources\\Stone\\Stone.bmp"));
 	Image::Manager.Add(new Image("StoneNormals", "Resources\\Stone\\Stonen.bmp"));
-
 }
+
+
+
 
 void main()
 {
@@ -106,18 +110,19 @@ void main()
 
 	Viewport::Camera = &MainWin.World->Camera;
 
-    MainWin.World->Groups[0].Add( Block( Vec3(   0,   0,  10),  1  ) );
-    MainWin.World->Groups[0].Add( Block( Vec3(   0,   0, -10),  1  ) );
-    MainWin.World->Groups[0].Add( Block( Vec3(   0,  10,   0),  1  ) );
-    MainWin.World->Groups[0].Add( Block( Vec3(   0, -10,   0),  1  ) );
-    MainWin.World->Groups[0].Add( Block( Vec3(  10,   0,   0),  1  ) );
-    MainWin.World->Groups[0].Add( Block( Vec3( -10,   0,   0),  1  ) );
-
+//   MainWin.World->Groups[0].Add( Block( Vec3(   0,   0,  10),  1  ) );
+//   MainWin.World->Groups[0].Add( Block( Vec3(   0,   0, -10),  1  ) );
+//   MainWin.World->Groups[0].Add( Block( Vec3(   0,  10,   0),  1  ) );
+//   MainWin.World->Groups[0].Add( Block( Vec3(   0, -10,   0),  1  ) );
+//   MainWin.World->Groups[0].Add( Block( Vec3(  10,   0,   0),  1  ) );
+//   MainWin.World->Groups[0].Add( Block( Vec3( -10,   0,   0),  1  ) );
+//
 	Sphere center(Vec3(0, 0, 0), 1, 25);
+
 	center.Add(new Material(*MoonMaterial()));
     MainWin.World->Groups[0].Add(center);
 
-   int dist = 100;
+   int dist = 150;
    for_loop(Index, 200)
    {
 	   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
@@ -130,8 +135,8 @@ void main()
    }
    for_loop(Index, 20)
    {
-	//   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
-	//   MainWin.World->Groups[0].Add(Sphere(pos, 1, 25), MoonMaterial()); // Torus(pos, 10, 10, 3)
+	   Vec3 pos = Vec3(rand() % dist - (dist*.5), rand() % dist - (dist*.5), rand() % dist - (dist*.5));
+	//   MainWin.World->Groups[0].Add(Sphere(pos, 10, 4), MoonMaterial()); // Torus(pos, 10, 10, 3)
    }
   
 	float
@@ -142,27 +147,27 @@ void main()
 	while (MainWin.EventLoop())
 	{
 		{
-			BenchMark Performance;
+		//	BenchMark Performance;
 			MainWin.CLS(0,0,0);
 			MainWin.World->Render();
-			MainWin.World->Lights[0].SetPosition
-			(
-				Vec3
-				(
-					cos(RADIANS(Xangle)) * 10,
-					sin(RADIANS(Xangle)) * 10,
-					sin(RADIANS(Yangle)) * 10
-				)
-			);
-	     	MainWin.World->Groups[0].Objects[0].Set_Position(MainWin.World->Lights[0].Position);
+		 MainWin.World->Lights[0].SetPosition
+		 (
+		 	Vec3
+		 	(
+		 		cos(RADIANS(Xangle)) * 10,
+		 		sin(RADIANS(Xangle)) * 10,
+		 		sin(RADIANS(Yangle)) * 10
+		 	)
+		 );
+	     MainWin.World->Groups[0].Objects[0].Set_Position(MainWin.World->Lights[0].Position);
 			MainWin.Sync();
 			Xangle+= .5;
 			Yangle+= .5;
 		}
- 
+	 //	Print(MainWin.Framerate.Get());
 
-		Print(DEGREES(MainWin.World->Camera.Rotation.x));
-		Print(DEGREES(MainWin.World->Camera.Rotation.y));
+	//	Print(DEGREES(MainWin.World->Camera.Rotation.x));
+	//	Print(DEGREES(MainWin.World->Camera.Rotation.y));
 	}
 	glBindVertexArray(0);
 }
